@@ -1,90 +1,325 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LAM, produtos</title>
-  <link rel="stylesheet" href="assets/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LisAM, produtos</title>
+<script>try{var t=localStorage.getItem('lisam-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f7fb; --bg2:#eef1f8; --card:#fff; --ink:#0b1220; --txt:#334155; --muted:#64748b; --line:#e4e8f0;
+  --brand:#4f46e5; --soft:#eef0ff; --chipbg:#f1f5f9; --head:rgba(255,255,255,.8);
+  --ok:#16a34a; --baixo:#d97706; --esgotado:#dc2626;
+  --c1:#2563eb; --c2:#db2777; --c3:#059669;
+  --grad:linear-gradient(135deg,#2563eb 0%,#7c3aed 55%,#db2777 100%);
+  --r:20px; --shadow-sm:0 1px 2px rgba(11,18,32,.05);
+  --shadow:0 1px 2px rgba(11,18,32,.04),0 14px 40px rgba(60,40,140,.10);
+}
+[data-theme="dark"]{
+  --bg:#080d1a; --bg2:#0e1528; --card:#111a30; --ink:#f1f5f9; --txt:#c3cde0; --muted:#8a98b4; --line:#1f2b48;
+  --brand:#8b8cff; --soft:#1a2349; --chipbg:#1a2340; --head:rgba(8,13,26,.78);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 14px 40px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);line-height:1.55;-webkit-font-smoothing:antialiased;transition:background .3s,color .3s}
+a{color:inherit}
+h1,h2,h3{color:var(--ink);letter-spacing:-.025em}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+section{margin-bottom:84px;scroll-margin-top:84px}
+.gtext{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);margin-bottom:10px}
+.eyebrow::before{content:"";width:22px;height:2px;border-radius:2px;background:var(--grad)}
+.sec-head{margin-bottom:28px}
+.sec-head h2{font-size:clamp(26px,3.4vw,36px);margin:0 0 8px;line-height:1.15}
+.sec-head p{margin:0;color:var(--muted);max-width:620px;font-size:16px}
+
+/* Revelar ao fazer scroll */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.rv:nth-child(2){transition-delay:.08s}.rv:nth-child(3){transition-delay:.16s}.rv:nth-child(4){transition-delay:.24s}
+
+/* Header */
+header.top{background:var(--head);backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:1000}
+.top-inner{max-width:1160px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:21px;color:var(--ink);text-decoration:none;letter-spacing:-.03em}
+.brand .mark{width:36px;height:36px;border-radius:11px;background:var(--grad);display:grid;place-items:center;box-shadow:0 6px 18px rgba(124,58,237,.45);transition:.4s}
+.brand:hover .mark{transform:rotate(90deg) scale(1.05)}
+.brand b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.top nav{display:flex;gap:6px;margin-left:auto;align-items:center}
+.top nav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;padding:8px 14px;border-radius:11px;transition:.15s}
+.top nav a:hover,.top nav a.active{color:var(--ink);background:var(--chipbg)}
+.top nav a.cta{background:var(--grad);color:#fff;padding:9px 20px;margin-left:6px;font-weight:600;box-shadow:0 6px 16px rgba(124,58,237,.35)}
+.top nav a.cta:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.theme{border:1px solid var(--line);background:var(--card);border-radius:11px;width:38px;height:38px;font-size:16px;cursor:pointer;transition:.2s;margin-left:4px}
+.theme:hover{transform:rotate(20deg)}
+.burger{display:none;margin-left:auto;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:11px;width:40px;height:40px;font-size:18px;cursor:pointer}
+
+/* Botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:13px;padding:13px 24px;font-size:15px;font-weight:600;cursor:pointer;transition:.2s;text-decoration:none;font-family:inherit}
+.btn-ghost{background:var(--card);color:var(--ink);border:1px solid var(--line);padding:11px 20px;font-size:14px}
+.btn-ghost:hover{border-color:var(--brand);transform:translateY(-2px)}
+
+/* Categorias */
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:12px;margin-bottom:22px}
+.cats a{display:flex;flex-direction:column;align-items:center;gap:10px;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 10px;font-size:14px;font-weight:600;transition:.25s;cursor:pointer}
+.cats a .ic{font-size:26px;width:54px;height:54px;border-radius:16px;background:var(--soft);display:grid;place-items:center;transition:.3s}
+.cats a:hover{transform:translateY(-4px);border-color:var(--brand);box-shadow:var(--shadow)}
+.cats a:hover .ic{transform:scale(1.12) rotate(-6deg);background:var(--grad)}
+.cats a.on{border-color:var(--brand);background:var(--soft)}
+.cats a.on .ic{background:var(--grad)}
+
+/* Peças */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px;flex:1}
+.chips button{border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:.15s}
+.chips button:hover{border-color:var(--brand);color:var(--ink)}
+.chips button.on{background:var(--grad);color:#fff;border-color:transparent}
+.toolbar select,.toolbar input[type="text"]{background:var(--card);color:var(--ink);font-family:inherit;border:1px solid var(--line);border-radius:12px;font-size:14px;padding:10px 14px}
+.toolbar select{padding:10px 40px 10px 14px;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.toolbar input[type="text"]{flex:0 1 260px;min-width:220px}
+.toolbar select:focus,.toolbar input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 4px color-mix(in srgb,var(--brand) 18%,transparent)}
+.pecas{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:20px}
+.peca{--cc:var(--c1);background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;transition:.3s;animation:pop .5s both;animation-delay:calc(var(--i,0)*60ms)}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+.peca:hover{transform:translateY(-6px);box-shadow:0 22px 46px color-mix(in srgb,var(--cc) 20%,transparent);border-color:color-mix(in srgb,var(--cc) 45%,var(--line))}
+.peca.c-c1{--cc:var(--c1)}.peca.c-c2{--cc:var(--c2)}.peca.c-c3{--cc:var(--c3)}
+.peca .foto{height:140px;position:relative;display:grid;place-items:center;font-size:52px;background:radial-gradient(circle at 30% 20%,color-mix(in srgb,var(--cc) 28%,var(--card)),color-mix(in srgb,var(--cc) 6%,var(--card)) 70%);overflow:hidden}
+.peca .foto::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.35) 50%,transparent 60%);transform:translateX(-120%);transition:.7s}
+.peca:hover .foto::after{transform:translateX(120%)}
+.peca .foto .em{transition:.4s;filter:drop-shadow(0 8px 12px rgba(0,0,0,.18))}
+.peca:hover .foto .em{transform:scale(1.18) rotate(-6deg)}
+.peca .foto strong{position:absolute;top:12px;left:12px;font-size:11px;font-weight:600;background:var(--card);padding:4px 11px;border-radius:999px;color:var(--ink);box-shadow:var(--shadow-sm)}
+.peca .foto small{position:absolute;top:12px;right:12px;font-size:11px;font-weight:600;color:#fff;background:var(--ok);padding:4px 10px;border-radius:999px}
+.peca .pb{padding:18px;display:flex;flex-direction:column;gap:4px;flex:1}
+.peca h3{margin:0;font-size:16px;line-height:1.3}
+.peca .ref{margin:0;font-size:12px;color:var(--muted);font-family:ui-monospace,monospace}
+.peca .loja{margin:8px 0 0;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.peca .loja::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--cc)}
+.peca .pf{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:16px}
+.peca .preco{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.03em}
+.peca .res{padding:10px 18px;border:0;border-radius:11px;background:var(--grad);color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;font-family:inherit}
+.peca .res:hover{transform:scale(1.05);filter:brightness(1.08)}
+.peca .res.ok,.peca .res:disabled{background:var(--ok);transform:none;cursor:default}
+.vazio-box{grid-column:1/-1;text-align:center;padding:56px 16px;background:var(--card);border:1px dashed var(--line);border-radius:var(--r);color:var(--muted)}
+.vazio-box b{display:block;font-size:34px;margin-bottom:6px}
+.vazio-box .btn{margin-top:16px}
+
+/* Footer */
+footer.foot{background:#070b18;color:#94a3b8;padding:56px 20px 28px;margin-top:20px;font-size:14px}
+.foot-grid{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:32px}
+.foot .brand{color:#fff;margin-bottom:12px}
+.foot h4{color:#fff;margin:0 0 12px;font-size:14px}
+.foot-grid a:not(.brand){display:block;color:#94a3b8;text-decoration:none;padding:4px 0;transition:.15s}
+.foot-grid a:not(.brand):hover{color:#fff;transform:translateX(3px)}
+.foot p{margin:0;max-width:340px}
+.foot .copy{max-width:1160px;margin:34px auto 0;padding-top:22px;border-top:1px solid rgba(255,255,255,.1);font-size:13px;text-align:center}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(90px);background:#0b1220;color:#fff;padding:14px 24px;border-radius:14px;font-size:14px;font-weight:500;transition:.35s;z-index:9999;opacity:0;pointer-events:none;box-shadow:0 16px 40px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.12)}
+.toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media(max-width:860px){
+  .burger{display:block}
+  .top nav{display:none;position:absolute;top:100%;left:0;right:0;background:var(--card);border-bottom:1px solid var(--line);flex-direction:column;align-items:stretch;padding:12px 20px 16px;margin:0}
+  .top nav.open{display:flex}
+  .top nav a.cta{margin:6px 0 0;text-align:center}
+  .theme{align-self:flex-start;margin:6px 0 0}
+  .foot-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
 </head>
-<body data-page="products">
+<body>
 
 <header class="top">
   <div class="top-inner">
-    <a class="brand" href="index.php">
-      <span class="mark">🚗</span>
-      <span>Lis<b>AM</b></span>
-    </a>
+    <a href="index.html" class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></span><span>Lis<b>AM</b></span></a>
+    <button class="burger" aria-label="Menu">☰</button>
     <nav>
-      <a href="index.php" class="<?= $activeNav==='inicio'?'active':'' ?>">Início</a>
-      <a href="products.php" class="<?= $activeNav==='produtos'?'active':'' ?>">Produtos</a>
-      <a href="stock.php">Stock</a>
-      <button class="theme" id="tema">🌙</button>
-      <a class="cta" href="login.php">Entrar</a>
+      <a href="index.html">Início</a>
+      <a href="products.html" class="active">Produtos</a>
+      <button class="theme" id="tema" type="button" aria-label="Alternar tema claro/escuro">🌙</button>
+      <a href="login.html" class="cta">Entrar</a>
     </nav>
-    <button class="burger">☰</button>
   </div>
 </header>
 
 <main class="wrap">
-
   <section id="pecas" style="margin-top:34px">
     <div class="sec-head rv">
       <span class="eyebrow">Catálogo</span>
       <h2>Peças disponíveis</h2>
       <p id="pecasSub">Stock atualizado pelas próprias lojas.</p>
     </div>
-
     <div class="cats" id="cats"></div>
-
     <div class="toolbar">
       <div class="chips" id="chipsEstado"></div>
-      <input
-        type="text"
-        id="q"
-        placeholder="Referência OEM, peça, marca ou loja"
-        aria-label="Pesquisar produtos"
-        style="background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:14px;font-family:inherit;min-width:220px;flex:0 1 260px"
-      >
+      <input type="text" id="q" placeholder="Referência OEM, peça, marca ou loja" aria-label="Pesquisar produtos">
       <select id="ordem" aria-label="Ordenar">
         <option value="">Ordenar: relevância</option>
         <option value="asc">Preço: mais baixo</option>
         <option value="desc">Preço: mais alto</option>
       </select>
     </div>
-
     <div class="pecas" id="pecasGrid"></div>
   </section>
-
 </main>
 
-<script id="data-lisam" type="application/json">
-{
-  "categorias": [
-    ["Motor","🔧"],
-    ["Travagem","🛑"],
-    ["Suspensão","⚙️"],
-    ["Elétrica","⚡"],
-    ["Arrefecimento","❄️"],
-    ["Iluminação","💡"],
-    ["Pneus","🛞"],
-    ["Carroçaria","🚗"]
-  ],
-  "parceiros": [
-    { "nome": "Leiria Peças", "sigla": "LP", "cor": "c1", "desc": "Peças usadas e recondicionadas", "local": "Leiria", "nota": "4.8" },
-    { "nome": "Leiria Motors", "sigla": "LM", "cor": "c2", "desc": "Peças novas e originais",        "local": "Leiria", "nota": "4.9" },
-    { "nome": "Centro Auto",   "sigla": "CA", "cor": "c3", "desc": "Multimarca, todo o tipo",        "local": "Marinha Grande", "nota": "4.7" }
-  ],
-  "lojas": [],
-  "pecas": [
-    { "titulo": "Pastilhas de travão dianteiras", "ref": "BP-1022", "cat": "Travagem", "loja": "Leiria Peças", "estado": "Novo", "preco": 120, "cor": "c1" },
-    { "titulo": "Filtro de óleo",                 "ref": "BP-1247", "cat": "Motor",    "loja": "Leiria Peças", "estado": "Novo", "preco": 15,  "cor": "c1" },
-    { "titulo": "Amortecedor traseiro",           "ref": "BP-5510", "cat": "Suspensão","loja": "Leiria Peças", "estado": "Usado","preco": 95,  "cor": "c2" },
-    { "titulo": "Alternador 90A",                 "ref": "BP-1990", "cat": "Elétrica", "loja": "Leiria Motors","estado": "Recondicionado","preco": 210,"cor": "c2" }
-  ]
+<footer class="foot">
+  <div class="foot-grid">
+    <div>
+      <a href="index.html" class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></span><span>Lis<b>AM</b></span></a>
+      <p>Marketplace automóvel B2B que liga oficinas às empresas de peças do distrito de Leiria.</p>
+    </div>
+    <div><h4>Plataforma</h4><a href="products.html">Peças</a><a href="stock.html">Stock</a><a href="index.html#lojas">Lojas</a></div>
+    <div><h4>Conta</h4><a href="login.html">Entrar</a><a href="login.html">Pedir acesso</a><a href="index.html#projeto">Sobre o projeto</a></div>
+  </div>
+  <div class="copy">© LisAM · Marketplace automóvel B2B · Leiria</div>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========== Common ========== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const eur = v => new Intl.NumberFormat('pt-PT').format(v) + ' €';
+function toast(msg, ms = 2400){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('on'), ms);
 }
+const burger = $('.burger');
+if (burger) burger.addEventListener('click', () => $('.top nav').classList.toggle('open'));
+const temaBtn = $('#tema');
+function pintarTema(){ if (temaBtn) temaBtn.textContent = document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙'; }
+pintarTema();
+if (temaBtn) temaBtn.addEventListener('click', () => {
+  const novo = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = novo;
+  try { localStorage.setItem('lisam-theme', novo); } catch (e) {}
+  pintarTema();
+});
+function countUp(el){
+  const n = parseFloat(el.dataset.count), suf = el.dataset.suf || '', t0 = performance.now(), d = 1300;
+  (function f(t){
+    const p = Math.min(1, (t - t0) / d);
+    el.textContent = Math.round(n * (1 - Math.pow(1 - p, 3))) + suf;
+    if (p < 1) requestAnimationFrame(f);
+  })(t0);
+}
+const io = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
+  if (!e.isIntersecting) return;
+  e.target.classList.add('in');
+  e.target.querySelectorAll('[data-count]').forEach(countUp);
+  io.unobserve(e.target);
+}), {threshold: .12}) : null;
+function reveal(root = document){
+  root.querySelectorAll('.rv:not(.in)').forEach(el => {
+    if (io) io.observe(el);
+    else { el.classList.add('in'); el.querySelectorAll('[data-count]').forEach(countUp); }
+  });
+}
+
+/* ========== Dados ========== */
+const categorias = [
+  ['Motor','⚙️'],['Travagem','🛑'],['Suspensão','🔩'],['Elétrica','⚡'],
+  ['Arrefecimento','❄️'],['Iluminação','💡'],['Pneus','🛞'],['Carroçaria','🚗']
+];
+const iconeCat = Object.fromEntries(categorias);
+const pecas = [
+  {titulo:'Pastilhas de travão dianteiras', ref:'BRK-1024', cat:'Travagem',      loja:'Leiria Peças',  cor:'c1', preco:120, estado:'Novo'},
+  {titulo:'Filtro de óleo',                 ref:'FLT-2210', cat:'Motor',         loja:'Leiria Peças',  cor:'c1', preco:15,  estado:'Novo'},
+  {titulo:'Amortecedor traseiro',           ref:'AMT-7781', cat:'Suspensão',     loja:'Leiria Peças',  cor:'c1', preco:95,  estado:'Usado'},
+  {titulo:'Alternador 90A',                 ref:'ALT-5540', cat:'Elétrica',      loja:'Leiria Motors', cor:'c2', preco:210, estado:'Recondicionado'},
+  {titulo:'Radiador de água',               ref:'RAD-3302', cat:'Arrefecimento', loja:'Leiria Motors', cor:'c2', preco:140, estado:'Novo'},
+  {titulo:'Farol dianteiro esquerdo',       ref:'FAR-9910', cat:'Iluminação',    loja:'Centro Auto',   cor:'c3', preco:320, estado:'Novo'},
+  {titulo:'Pneu 205/55 R16',                ref:'PNE-4408', cat:'Pneus',         loja:'Centro Auto',   cor:'c3', preco:85,  estado:'Novo'}
+];
+
+let catAtiva = '', estAtivo = '';
+const reservadas = new Set();
+
+/* ========== Categorias ========== */
+function renderCats(){
+  $('#cats').innerHTML = categorias.map(([c,i]) =>
+    `<a data-cat="${esc(c)}" class="${catAtiva===c?'on':''}"><span class="ic">${i}</span>${esc(c)}</a>`).join('');
+}
+$('#cats').addEventListener('click', e => {
+  const a = e.target.closest('a'); if (!a) return;
+  catAtiva = catAtiva === a.dataset.cat ? '' : a.dataset.cat;
+  renderPecas();
+});
+
+/* ========== Chips ========== */
+function renderChips(){
+  const estados = ['', 'Novo', 'Usado', 'Recondicionado'];
+  $('#chipsEstado').innerHTML = estados.map(s =>
+    `<button type="button" data-e="${s}" class="${estAtivo===s?'on':''}">${s || 'Todos'}</button>`).join('');
+}
+$('#chipsEstado').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  estAtivo = b.dataset.e; renderPecas();
+});
+
+function limparFiltros(){
+  $('#q').value = ''; catAtiva = ''; estAtivo = ''; $('#ordem').value = '';
+  renderPecas();
+}
+
+/* ========== Render peças ========== */
+function renderPecas(){
+  const raw = $('#q').value.trim(), q = raw.toLowerCase(), ord = $('#ordem').value;
+  let lista = pecas.filter(p =>
+    (!q || (p.titulo+' '+p.ref+' '+p.loja+' '+p.cat+' '+p.estado).toLowerCase().includes(q)) &&
+    (!catAtiva || p.cat === catAtiva) &&
+    (!estAtivo || p.estado === estAtivo));
+  if (ord) lista = [...lista].sort((a,b) => ord === 'asc' ? a.preco-b.preco : b.preco-a.preco);
+
+  const filtrado = q || catAtiva || estAtivo;
+  $('#pecasSub').textContent = filtrado
+    ? `${lista.length} ${lista.length === 1 ? 'resultado' : 'resultados'}` + (raw ? ` para "${raw}"` : '') + (catAtiva ? ` em ${catAtiva}` : '') + (estAtivo ? ` (${estAtivo})` : '') + '.'
+    : 'Stock atualizado pelas próprias lojas.';
+  renderCats(); renderChips();
+
+  const box = $('#pecasGrid');
+  if (!lista.length){
+    box.innerHTML = '<div class="vazio-box"><b>🔍</b>Sem resultados. Tente outra pesquisa ou limpe os filtros.<br><button class="btn btn-ghost" type="button" id="limpar">Limpar filtros</button></div>';
+    $('#limpar').addEventListener('click', limparFiltros);
+    return;
+  }
+  box.innerHTML = lista.map((p, n) => {
+    const r = reservadas.has(p.ref);
+    return `
+    <article class="peca c-${p.cor}" style="--i:${n}">
+      <div class="foto"><strong>${esc(p.estado)}</strong><small>Hoje</small><span class="em">${iconeCat[p.cat] || '🔧'}</span></div>
+      <div class="pb">
+        <h3>${esc(p.titulo)}</h3>
+        <p class="ref">Ref. ${esc(p.ref)} · ${esc(p.cat)}</p>
+        <p class="loja">${esc(p.loja)}</p>
+        <div class="pf">
+          <span class="preco">${eur(p.preco)}</span>
+          <button class="res${r?' ok':''}" type="button" data-ref="${esc(p.ref)}"${r?' disabled':''}>${r?'Reservado ✓':'Reservar'}</button>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+/* ========== Eventos ========== */
+$('#q').addEventListener('input', renderPecas);
+$('#ordem').addEventListener('change', renderPecas);
+$('#pecasGrid').addEventListener('click', e => {
+  const b = e.target.closest('.res'); if (!b || b.disabled) return;
+  reservadas.add(b.dataset.ref);
+  b.classList.add('ok'); b.textContent = 'Reservado ✓'; b.disabled = true;
+  toast('Peça reservada! Receberá confirmação por email.');
+});
+
+/* ========== Init ========== */
+renderPecas();
+reveal();
 </script>
-
-<script src="assets/app.js"></script>
-
 </body>
 </html>
