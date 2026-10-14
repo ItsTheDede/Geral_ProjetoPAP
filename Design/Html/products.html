@@ -1,12 +1,3 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stock | LisAM</title>
-<script>try{var t=localStorage.getItem('lisam-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#f6f7fb; --bg2:#eef1f8; --card:#fff; --ink:#0b1220; --txt:#334155; --muted:#64748b; --line:#e4e8f0;
@@ -346,64 +337,37 @@ footer.foot{background:#070b18;color:#94a3b8;padding:56px 20px 28px;margin-top:2
   .cta-band{padding:32px 26px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
-
 </style>
-</head>
-<body>
-
-<header class="top">
-  <div class="top-inner">
-    <a href="index.html" class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></span><span>Lis<b>AM</b></span></a>
-    <button class="burger" aria-label="Menu">☰</button>
-    <nav>
-      <a href="index.html">Início</a>
-      <a href="stock.html" class="active">Stock</a>
-      <button class="theme" id="tema" type="button" aria-label="Alternar tema claro/escuro">🌙</button>
-      <a href="login.html" class="cta">Entrar</a>
-    </nav>
-  </div>
-</header>
 
 <main class="wrap">
-  <div class="page-head">
-    <div>
-      <span class="eyebrow">Painel</span>
-      <h1>Stock</h1>
-      <p>Disponibilidade por empresa, atualizada pelas próprias lojas.</p>
+
+  <section id="pecas" style="margin-top:34px">
+    <div class="sec-head rv">
+      <span class="eyebrow">Produtos</span>
+      <h2>Todas as peças disponíveis</h2>
+      <p id="pecasSub">Stock atualizado pelas próprias lojas.</p>
     </div>
-    <button class="btn btn-ghost" id="exportar" type="button">⬇ Exportar CSV</button>
-  </div>
 
-  <div class="resumo" id="resumo"></div>
-  <div class="tabs" id="tabs"></div>
+    <div class="cats" id="cats"></div>
 
-  <form class="filtros" id="filtros" onsubmit="return false">
-    <input type="text" id="qStock" placeholder="Referência, peça ou categoria" aria-label="Pesquisar no stock">
-    <select id="estado" aria-label="Estado do stock">
-      <option value="">Todo o stock</option>
-      <option value="ok">Em stock</option>
-      <option value="baixo">Stock baixo</option>
-      <option value="esgotado">Esgotado</option>
-    </select>
-    <button class="btn btn-primary" type="submit">Filtrar</button>
-    <a class="limpar" id="limpar" style="display:none">Limpar</a>
-  </form>
+    <div class="toolbar">
+      <div class="chips" id="chipsEstado"></div>
+      <input type="text" id="q" placeholder="Referência OEM, peça, marca ou loja"
+             aria-label="Pesquisar produtos"
+             style="background:var(--card);color:var(--ink);border:1px solid var(--line);
+                    border-radius:12px;padding:10px 14px;font-size:14px;font-family:inherit;
+                    min-width:220px;flex:0 1 260px">
+      <select id="ordem" aria-label="Ordenar">
+        <option value="">Ordenar: relevância</option>
+        <option value="asc">Preço: mais baixo</option>
+        <option value="desc">Preço: mais alto</option>
+      </select>
+    </div>
 
-  <div id="conteudoStock"></div>
+    <div class="pecas" id="pecasGrid"></div>
+  </section>
+
 </main>
-
-<footer class="foot">
-  <div class="foot-grid">
-    <div>
-      <a href="index.html" class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></span><span>Lis<b>AM</b></span></a>
-      <p>Marketplace automóvel B2B que liga oficinas às empresas de peças do distrito de Leiria.</p>
-    </div>
-    <div><h4>Plataforma</h4><a href="index.html#pecas">Peças</a><a href="stock.html">Stock</a><a href="index.html#lojas">Lojas</a></div>
-    <div><h4>Conta</h4><a href="login.html">Entrar</a><a href="login.html">Pedir acesso</a><a href="index.html#projeto">Sobre o projeto</a></div>
-  </div>
-  <div class="copy">© LisAM · Marketplace automóvel B2B · Leiria</div>
-</footer>
-<div class="toast" id="toast"></div>
 
 <script>
 const $ = s => document.querySelector(s);
@@ -453,131 +417,62 @@ function reveal(root = document){
 
 </script>
 <script>
-const parceiros = [
-  {cor:'c1', nome:'Leiria Peças',  sigla:'LP', desc:'Peças originais e equivalentes', local:'Leiria'},
-  {cor:'c2', nome:'Leiria Motors', sigla:'LM', desc:'Peças multimarca',              local:'Marinha Grande'},
-  {cor:'c3', nome:'Centro Auto',   sigla:'CA', desc:'Peças e acessórios',            local:'Leiria'}
-];
-const stock = {
-  c1: [
-    {ref:'BRK-1024', titulo:'Pastilhas de travão dianteiras', cat:'Travagem',      estado:'Novo',           qtd:8, preco:120},
-    {ref:'FLT-2210', titulo:'Filtro de óleo',                 cat:'Motor',         estado:'Novo',           qtd:2, preco:15},
-    {ref:'AMT-7781', titulo:'Amortecedor traseiro',           cat:'Suspensão',     estado:'Usado',          qtd:0, preco:95}
-  ],
-  c2: [
-    {ref:'ALT-5540', titulo:'Alternador 90A',                 cat:'Elétrica',      estado:'Recondicionado', qtd:5, preco:210},
-    {ref:'RAD-3302', titulo:'Radiador de água',               cat:'Arrefecimento', estado:'Novo',           qtd:4, preco:140}
-  ],
-  c3: [
-    {ref:'FAR-9910', titulo:'Farol dianteiro esquerdo',       cat:'Iluminação',    estado:'Novo',           qtd:1, preco:320},
-    {ref:'PNE-4408', titulo:'Pneu 205/55 R16',                cat:'Pneus',         estado:'Novo',           qtd:5, preco:85}
-  ]
+$('#ver').addEventListener('click', () => {
+  const p = $('#pass');
+  const mostrar = p.type === 'password';
+  p.type = mostrar ? 'text' : 'password';
+  $('#ver').textContent = mostrar ? 'Ocultar' : 'Mostrar';
+});
+$('#esqueci').addEventListener('click', e => { e.preventDefault(); toast('Pedido de recuperação enviado (demo).'); });
+$('#pedir').addEventListener('click',   e => { e.preventDefault(); toast('Pedido de acesso enviado (demo).'); });
+
+const utilizadoresDemo = {
+  'oficina@exemplo.pt': { nome:'Oficina Demo', pass:'123456' },
+  'demo@lisam.pt':      { nome:'Demo',         pass:'demo' }
 };
+let tentativas = 0;
 
-function estadoStock(q){ if(q===0) return ['esgotado','Esgotado']; return q<=2 ? ['baixo','Stock baixo'] : ['ok','Em stock']; }
+$('#loginForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const email = $('#email').value.trim().toLowerCase();
+  const pass  = $('#pass').value;
+  const erro  = $('#erro');
 
-let filtroEmp = '', filtroQ = '', filtroEst = '';
-
-function renderResumoTotais(){
-  let totRef=0, totUn=0, totVal=0;
-  Object.values(stock).forEach(itens => itens.forEach(i => { totRef++; totUn += i.qtd; totVal += i.qtd * i.preco; }));
-  $('#resumo').innerHTML = `
-    <div><span class="ic">📦</span><div><b>${totRef}</b><span>Referências</span></div></div>
-    <div><span class="ic">🔢</span><div><b>${totUn}</b><span>Unidades</span></div></div>
-    <div><span class="ic">💶</span><div><b>${eur(totVal)}</b><span>Valor em stock</span></div></div>
-    <div><span class="ic">🏪</span><div><b>${parceiros.length}</b><span>Empresas</span></div></div>`;
-}
-function renderTabsStock(){
-  $('#tabs').innerHTML = `
-    <a class="${filtroEmp===''?'on':''}" data-emp="">Todas</a>
-    ${parceiros.map(p => `
-      <a class="c-${p.cor} ${filtroEmp===p.cor?'on':''}" data-emp="${p.cor}">
-        ${esc(p.nome)} <small>${(stock[p.cor]||[]).length}</small>
-      </a>`).join('')}`;
-}
-function renderConteudoStock(){
-  const q = filtroQ.trim().toLowerCase(), est = filtroEst;
-  $('#limpar').style.display = (q !== '' || est !== '') ? 'inline-flex' : 'none';
-
-  let html = '';
-  parceiros.forEach((p, n) => {
-    if (filtroEmp && filtroEmp !== p.cor) return;
-    const todos = stock[p.cor] || [];
-    const itens = todos.filter(i => {
-      if (q && !(i.titulo + ' ' + i.ref + ' ' + i.cat).toLowerCase().includes(q)) return false;
-      if (est && estadoStock(i.qtd)[0] !== est) return false;
-      return true;
-    });
-    const un  = todos.reduce((s,i)=>s+i.qtd,0);
-    const val = todos.reduce((s,i)=>s+i.qtd*i.preco,0);
-
-    html += `
-      <section class="empresa c-${p.cor}" id="${p.cor}" style="margin-bottom:24px;animation-delay:${n*80}ms">
-        <div class="empresa-top">
-          <div class="empresa-id">
-            <div class="av">${esc(p.sigla)}</div>
-            <div>
-              <h2>${esc(p.nome)}</h2>
-              <p class="sub">${esc(p.desc)} · ${esc(p.local)}</p>
-            </div>
-          </div>
-          <div class="empresa-n"><span><b>${todos.length}</b> refs</span><span><b>${un}</b> un.</span><span><b>${eur(val)}</b></span></div>
-        </div>`;
-    if (!itens.length){
-      html += `<p class="vazio">Sem resultados nesta empresa para os filtros escolhidos.</p>`;
-    } else {
-      html += `<div class="tabela-wrap"><table class="tabela">
-        <thead><tr><th>Referência</th><th>Peça</th><th>Categoria</th><th>Estado</th><th class="r">Qtd.</th><th>Stock</th><th class="r">Preço</th></tr></thead>
-        <tbody>${itens.map(i => {
-          const [cl, txt] = estadoStock(i.qtd);
-          return `<tr>
-            <td class="ref"><b>${esc(i.ref)}</b></td>
-            <td>${esc(i.titulo)}</td>
-            <td>${esc(i.cat)}</td>
-            <td>${esc(i.estado)}</td>
-            <td class="r"><div class="q"><b>${i.qtd}</b><div class="qbar"><i class="${cl}" style="width:${Math.max(i.qtd ? 8 : 0, Math.min(100, i.qtd * 10))}%"></i></div></div></td>
-            <td><span class="chip ${cl}">${txt}</span></td>
-            <td class="r preco-s">${eur(i.preco)}</td>
-          </tr>`;
-        }).join('')}</tbody></table></div>`;
-    }
-    html += `</section>`;
-  });
-  $('#conteudoStock').innerHTML = html || '<p class="vazio">Sem resultados.</p>';
-}
-
-$('#qStock').addEventListener('input', e => { filtroQ = e.target.value; renderConteudoStock(); });
-$('#estado').addEventListener('change', e => { filtroEst = e.target.value; renderConteudoStock(); });
-$('#filtros').addEventListener('submit', e => { e.preventDefault(); renderConteudoStock(); });
-$('#limpar').addEventListener('click', () => {
-  filtroQ = ''; filtroEst = '';
-  $('#qStock').value = ''; $('#estado').value = '';
-  renderConteudoStock();
+  if (tentativas >= 5){
+    erro.textContent = 'Demasiadas tentativas. Recarregue a página.';
+    erro.style.display = 'block';
+    return;
+  }
+  if (!email || !pass){
+    erro.textContent = 'Introduza um email e uma palavra-passe válidos.';
+    erro.style.display = 'block';
+    return;
+  }
+  const u = utilizadoresDemo[email];
+  if (u && u.pass === pass){
+    erro.style.display = 'none';
+    const btn = $('#btnEntrar');
+    btn.disabled = true; btn.textContent = 'A entrar…';
+    toast('Bem-vindo, ' + u.nome + '!');
+    setTimeout(() => {
+      btn.textContent = 'Entrado ✓';
+      btn.style.background = 'var(--ok)';
+      setTimeout(() => location.href = 'index.html', 700);
+    }, 600);
+    return;
+  }
+  tentativas++;
+  erro.textContent = 'Email ou palavra-passe incorretos.';
+  erro.style.display = 'block';
+  erro.classList.remove('shake'); void erro.offsetWidth; erro.classList.add('shake');
+  toast('Credenciais inválidas (demo: oficina@exemplo.pt / 123456)');
 });
-$('#tabs').addEventListener('click', e => {
-  const a = e.target.closest('a'); if (!a) return;
-  filtroEmp = a.dataset.emp;
-  renderTabsStock(); renderConteudoStock();
-});
-
-/* Exportar CSV */
-$('#exportar').addEventListener('click', () => {
-  const cel = v => '"' + String(v).replace(/"/g, '""') + '"';
-  const linhas = [['Empresa','Referência','Peça','Categoria','Estado','Quantidade','Preço (€)'].map(cel).join(';')];
-  parceiros.forEach(p => (stock[p.cor] || []).forEach(i =>
-    linhas.push([p.nome, i.ref, i.titulo, i.cat, i.estado, i.qtd, i.preco].map(cel).join(';'))));
-  try {
-    const blob = new Blob(['﻿' + linhas.join('\n')], {type:'text/csv;charset=utf-8'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = 'lisam-stock.csv';
-    document.body.appendChild(a); a.click(); a.remove();
-    toast('Stock exportado.');
-  } catch (e) { toast('Não foi possível exportar.'); }
-});
-
-renderResumoTotais();
-renderTabsStock();
-renderConteudoStock();
 </script>
-</body>
-</html>
+<script id="data-lisam" type="application/json">
+<?= json_encode([
+  'categorias' => array_map(fn($k,$v) => [$k,$v], array_keys($categorias), array_values($categorias)),
+  'parceiros'  => $parceiros,
+  'lojas'      => $lojas,
+  'pecas'      => $pecas,
+], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES) ?>
+</script>
