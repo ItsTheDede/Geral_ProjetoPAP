@@ -1,5 +1,5 @@
 <?php
-if (!isset($pageTitle)) $pageTitle = 'LisAM, marketplace automóvel B2B';
+if (!isset($pageTitle)) $pageTitle = 'LAM, marketplace automóvel B2B';
 if (!isset($activeNav)) $activeNav = '';
 if (!isset($pageCss))   $pageCss   = [];   // caminhos relativos a assets/css/
 if (!isset($bodyPage))  $bodyPage  = '';   // home | stock | login
@@ -31,12 +31,12 @@ if (!isset($bodyPage))  $bodyPage  = '';   // home | stock | login
       <span class="mark">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>
       </span>
-      <span>Lis<b>AM</b></span>
+      <span>L<b>AM</b></span>
     </a>
     <button class="burger" aria-label="Menu">☰</button>
     <nav>
       <a href="index.php" class="<?= $activeNav === 'inicio' ? 'active' : '' ?>">Início</a>
-      <a href="stock.php" class="<?= $activeNav === 'stock'  ? 'active' : '' ?>">Stock</a>
+      <a href="products.php" class="<?= $activeNav === 'stock'  ? 'active' : '' ?>">Produtos</a>
       <button class="theme" id="tema" type="button" aria-label="Alternar tema claro/escuro">🌙</button>
       <?php if (!empty($_SESSION['user'])): ?>
         <a href="logout.php" class="cta">Sair (<?= e($_SESSION['user']['nome']) ?>)</a>

@@ -13,7 +13,7 @@
     <div><h4>Plataforma</h4><a href="index.php#pecas">Peças</a><a href="stock.php">Stock</a><a href="index.php#lojas">Lojas</a></div>
     <div><h4>Conta</h4><a href="login.php">Entrar</a><a href="login.php">Pedir acesso</a><a href="index.php#projeto">Sobre o projeto</a></div>
   </div>
-  <div class="copy">© LisAM · Marketplace automóvel B2B · Leiria</div>
+  <div class="copy">© LAM · Marketplace automóvel B2B · Leiria</div>
 </footer>
 
 <div class="toast" id="toast"></div>

@@ -9,6 +9,105 @@ const $$  = s => document.querySelectorAll(s);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const eur = v => new Intl.NumberFormat('pt-PT').format(v) + ' €';
 
+/* =============================================================
+   PRODUCTS
+   ============================================================= */
+function initProducts(){
+  const dataEl = document.getElementById('data-lisam');
+  if (!dataEl) return;
+  const DADOS = JSON.parse(dataEl.textContent);
+
+  const categorias = DADOS.categorias;   // [[nome, icone], ...]
+  const pecas      = DADOS.pecas;
+  const iconeCat   = Object.fromEntries(categorias);
+
+  let catAtiva = '', estAtivo = '';
+  const reservadas = new Set();
+
+  /* Categorias */
+  function renderCats(){
+    $('#cats').innerHTML = categorias.map(([c,i]) =>
+      `<a data-cat="${esc(c)}" class="${catAtiva===c?'on':''}"><span class="ic">${i}</span>${esc(c)}</a>`).join('');
+  }
+  $('#cats').addEventListener('click', e => {
+    const a = e.target.closest('a'); if (!a) return;
+    catAtiva = catAtiva === a.dataset.cat ? '' : a.dataset.cat;
+    renderPecas();
+  });
+
+  /* Chips estado */
+  function renderChips(){
+    const estados = ['', 'Novo', 'Usado', 'Recondicionado'];
+    $('#chipsEstado').innerHTML = estados.map(s =>
+      `<button type="button" data-e="${s}" class="${estAtivo===s?'on':''}">${s || 'Todos'}</button>`).join('');
+  }
+  $('#chipsEstado').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    estAtivo = b.dataset.e; renderPecas();
+  });
+
+  /* Limpar */
+  function limparFiltros(){
+    $('#q').value = ''; catAtiva = ''; estAtivo = ''; $('#ordem').value = '';
+    renderPecas();
+  }
+
+  /* Grid */
+  function renderPecas(){
+    const raw = $('#q').value.trim(), q = raw.toLowerCase(), ord = $('#ordem').value;
+    let lista = pecas.filter(p =>
+      (!q || (p.titulo+' '+p.ref+' '+p.loja+' '+p.cat+' '+p.estado).toLowerCase().includes(q)) &&
+      (!catAtiva || p.cat === catAtiva) &&
+      (!estAtivo || p.estado === estAtivo));
+    if (ord) lista = [...lista].sort((a,b) => ord === 'asc' ? a.preco-b.preco : b.preco-a.preco);
+
+    const filtrado = q || catAtiva || estAtivo;
+    $('#pecasSub').textContent = filtrado
+      ? `${lista.length} ${lista.length === 1 ? 'resultado' : 'resultados'}` +
+        (raw ? ` para "${raw}"` : '') +
+        (catAtiva ? ` em ${catAtiva}` : '') +
+        (estAtivo ? ` (${estAtivo})` : '') + '.'
+      : 'Stock atualizado pelas próprias lojas.';
+
+    renderCats(); renderChips();
+
+    const box = $('#pecasGrid');
+    if (!lista.length){
+      box.innerHTML = '<div class="vazio-box"><b>🔍</b>Sem resultados. Tente outra pesquisa ou limpe os filtros.<br><button class="btn btn-ghost" type="button" id="limpar">Limpar filtros</button></div>';
+      $('#limpar').addEventListener('click', limparFiltros);
+      return;
+    }
+    box.innerHTML = lista.map((p, n) => {
+      const r = reservadas.has(p.ref);
+      return `
+      <article class="peca c-${p.cor}" style="--i:${n}">
+        <div class="foto"><strong>${esc(p.estado)}</strong><small>Hoje</small><span class="em">${iconeCat[p.cat] || '🔧'}</span></div>
+        <div class="pb">
+          <h3>${esc(p.titulo)}</h3>
+          <p class="ref">Ref. ${esc(p.ref)} · ${esc(p.cat)}</p>
+          <p class="loja">${esc(p.loja)}</p>
+          <div class="pf">
+            <span class="preco">${eur(p.preco)}</span>
+            <button class="res${r?' ok':''}" type="button" data-ref="${esc(p.ref)}"${r?' disabled':''}>${r?'Reservado ✓':'Reservar'}</button>
+          </div>
+        </div>
+      </article>`;
+    }).join('');
+  }
+
+  $('#q').addEventListener('input', renderPecas);
+  $('#ordem').addEventListener('change', renderPecas);
+  $('#pecasGrid').addEventListener('click', e => {
+    const b = e.target.closest('.res'); if (!b || b.disabled) return;
+    reservadas.add(b.dataset.ref);
+    b.classList.add('ok'); b.textContent = 'Reservado ✓'; b.disabled = true;
+    toast('Peça reservada! Receberá confirmação por email.');
+  });
+
+  renderPecas();
+  reveal();
+}
+
 function toast(msg, ms = 2400){
   const t = $('#toast'); if (!t) return;
   t.textContent = msg; t.classList.add('on');
@@ -346,4 +445,5 @@ document.addEventListener('DOMContentLoaded', () => {
   if (page === 'home')  initHome();
   if (page === 'stock') initStock();
   if (page === 'login') initLogin();
+  if (page === 'products') initProducts();
 });
