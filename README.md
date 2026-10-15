@@ -1,6 +1,6 @@
 ## 📌 Sobre o Projeto
 
-O **AutoLeiria** é uma plataforma de e-commerce hiperlocal que agrega PMEs do setor automóvel regional — tais como **Centros de Abate de Veículos (CAMV)**, **retificadoras** e **recondicionadores especializados**[cite: 5]. 
+O **LAM - Leiria AutoMarket** é uma plataforma de e-commerce hiperlocal que agrega PMEs do setor automóvel regional — tais como **Centros de Abate de Veículos (CAMV)**, **retificadoras** e **recondicionadores especializados**[cite: 5]. 
 
 A plataforma permite que cada empresa venda peças usadas, recondicionadas e equipamentos sob a sua própria identidade de marca[cite: 5], aliando as vantagens do comércio eletrónico tradicional (pesquisa por VIN/matrícula ou referência OEM[cite: 5, 7], reserva e pagamento online[cite: 5]) a benefícios de proximidade (levantamento no local e **entregas no próprio dia** para oficinas[cite: 5]).
 
