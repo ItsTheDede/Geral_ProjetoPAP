@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     
     <!-- LIGAÇÃO AO TEU CSS LOCAL -->
-    <link rel="stylesheet" href="scr/backgroud.css">
+    <link rel="stylesheet" href="src/backgroud.css">
 </head>
 <body>
     <header class="top">
@@ -133,6 +133,6 @@
     </footer>
 
     <!-- LIGAÇÃO AO TEU JAVASCRIPT LOCAL -->
-    <script src="src/animation.js"></script>
+    <script src="src/animations.js"></script>
 </body>
 </html>

@@ -7,7 +7,7 @@
     <script>try{var t=localStorage.getItem('lisam-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="src/background.css">
+    <link rel="stylesheet" href="src/backgroud.css">
 </head>
 <body>
     <header class="top">
@@ -61,6 +61,6 @@
     <div class="copy">© LAM · Peças auto B2B · Leiria</div>
     </footer>
     <div class="toast" id="toast"></div>
-    <script src="src/animation.js"></script>
+    <script src="src/animations.js"></script>
 </body>
 </html>
