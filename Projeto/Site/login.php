@@ -1,83 +1,95 @@
-<?php
-require __DIR__ . '/includes/config.php';
-
-$erro = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = strtolower(trim($_POST['email'] ?? ''));
-    $pass  = $_POST['pass'] ?? '';
-
-    if ($email === '' || $pass === '') {
-        $erro = 'Introduza um email e uma palavra-passe válidos.';
-    } elseif (isset($utilizadoresDemo[$email]) && $utilizadoresDemo[$email]['pass'] === $pass) {
-        $_SESSION['user'] = ['email' => $email, 'nome' => $utilizadoresDemo[$email]['nome']];
-        header('Location: index.php');
-        exit;
-    } else {
-        $erro = 'Email ou palavra-passe incorretos.';
-    }
-}
-
-$pageTitle = 'Entrar | LisAM';
-$activeNav = '';
-$bodyPage  = 'login';
-
-require __DIR__ . '/includes/header.php';
-?>
-
-<main class="login-page">
-  <div class="login-side">
-    <span class="blob b1"></span><span class="blob b2"></span>
-    <div>
-      <span class="eyebrow" style="color:#a5b4fc">Área de parceiros</span>
-      <h1>Bem-vindo de volta à <span class="gtext">oficina</span>.</h1>
-      <p>Entre na sua conta para reservar peças, acompanhar encomendas e levantar na loja ou receber no próprio dia.</p>
-      <div class="vant">
-        <div><span>⚡</span>Reserve peças em segundos</div>
-        <div><span>📍</span>Levante na loja mais próxima</div>
-        <div><span>🚚</span>Entrega no próprio dia num raio de 30 km</div>
-      </div>
-      <div class="lista">
-        <?php foreach ($parceiros as $p): ?>
-          <div class="c-<?= e($p['cor']) ?>">
-            <i></i><b><?= e($p['nome']) ?></b><span><?= e($p['local']) ?></span>
-          </div>
-        <?php endforeach; ?>
-      </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar | LAM</title>
+    <script>try{var t=localStorage.getItem('lisam-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="src/background.css">
+</head>
+<body>
+    <header class="top">
+    <div class="top-inner">
+        <a href="index.html" class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></span><span>Lis<b>AM</b></span></a>
+        <span class="plate hide-s"><span>PEÇAS AUTO</span></span>
+        <button class="burger" aria-label="Menu">☰</button>
+        <nav>
+        <a href="index.html">Início</a>
+        <a href="products.html">Produtos</a>
+        <button class="theme" id="tema" type="button" aria-label="Alternar tema claro/escuro">🌙</button>
+        <a href="login.html" class="cta">Entrar</a>
+        </nav>
     </div>
-  </div>
+    </header>
 
-  <div class="form-wrap">
-    <span class="blob b2"></span>
-    <form class="card" id="loginForm" method="post" action="login.php" novalidate>
-      <h2>Entrar</h2>
-      <p class="sub">Acesso para oficinas e empresas parceiras.</p>
-
-      <div class="campo">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="oficina@exemplo.pt" autocomplete="email" required
-               value="<?= e($_POST['email'] ?? '') ?>">
-      </div>
-
-      <div class="campo">
-        <label for="pass">Palavra-passe</label>
-        <div class="pw">
-          <input type="password" id="pass" name="pass" placeholder="••••••••" autocomplete="current-password" required>
-          <button type="button" class="ver" id="ver">Mostrar</button>
+    <main class="login-page">
+    <div class="login-side">
+        <svg class="disc" viewBox="0 0 200 200" aria-hidden="true"><defs><circle id="fh" cx="100" cy="30" r="7"/></defs><circle class="a" cx="100" cy="100" r="96"/><circle class="b" cx="100" cy="100" r="82"/><circle class="a" cx="100" cy="100" r="64"/><g class="b"><use href="#fh"/><use href="#fh" transform="rotate(45 100 100)"/><use href="#fh" transform="rotate(90 100 100)"/><use href="#fh" transform="rotate(135 100 100)"/><use href="#fh" transform="rotate(180 100 100)"/><use href="#fh" transform="rotate(225 100 100)"/><use href="#fh" transform="rotate(270 100 100)"/><use href="#fh" transform="rotate(315 100 100)"/></g><circle class="b" cx="100" cy="100" r="30"/><circle class="a" cx="100" cy="100" r="22"/><g class="b"><circle cx="100" cy="86" r="4"/><circle cx="114" cy="100" r="4"/><circle cx="100" cy="114" r="4"/><circle cx="86" cy="100" r="4"/></g></svg>
+        <div>
+        <span class="eyebrow" id="sideEyebrow">Área de parceiros</span>
+        <h1 id="sideTitulo">Bem-vindo de volta à <span class="gtext">oficina</span>.</h1>
+        <p id="sideTexto">Entre na sua conta para reservar peças auto, acompanhar encomendas e levantar na loja ou receber no próprio dia.</p>
+        <div class="vant" id="vantEmpresa">
+            <div><span>⚡</span>Reserve peças em segundos</div>
+            <div><span>📍</span>Levante na loja mais próxima</div>
+            <div><span>🚚</span>Entrega no próprio dia num raio de 30 km</div>
         </div>
-      </div>
+        <div class="vant" id="vantCliente" hidden>
+            <div><span>🔎</span>Pesquise peças pela referência ou pelo carro</div>
+            <div><span>🛒</span>Veja as suas reservas num só sítio</div>
+            <div><span>📍</span>Levante junto de quem tem em stock, perto de si</div>
+        </div>
+        <div class="lista">
+            <div class="c-c1"><i></i><b>Samiparts</b><span>Flandes</span></div>
+            <div class="c-c2"><i></i><b>Guipeças</b><span>Marinha Grande</span></div>
+            <div class="c-c3"><i></i><b>Gamipeças</b><span>Pombal</span></div>
+        </div>
+        </div>
+    </div>
 
-      <div class="linha">
-        <label><input type="checkbox" id="lembrar" name="lembrar"> Manter sessão iniciada</label>
-        <a href="#" id="esqueci">Esqueci-me da palavra-passe</a>
-      </div>
+    <div class="form-wrap">
+        <form class="card" id="loginForm" novalidate>
+        <h2>Entrar</h2>
+        <p class="sub" id="subTxt">Acesso para oficinas e empresas parceiras.</p>
 
-      <p class="erro" id="erro" role="alert" style="<?= $erro ? '' : 'display:none' ?>"><?= e($erro) ?></p>
-      <button type="submit" class="entrar" id="btnEntrar">Entrar</button>
+        <div class="tipo-conta" role="radiogroup" aria-label="Tipo de conta">
+            <label class="opt" id="optCliente">
+            <input type="radio" name="conta" value="cliente">
+            <span class="ico">👤</span>
+            <span><strong>Cliente</strong><small>Particular</small></span>
+            </label>
+            <label class="opt on" id="optEmpresa">
+            <input type="radio" name="conta" value="empresa" checked>
+            <span class="ico">🔧</span>
+            <span><strong>Empresa</strong><small>Oficina ou outra</small></span>
+            </label>
+        </div>
 
-      <p class="novo">Ainda não tem conta? <a href="#" id="pedir">Pedir acesso</a></p>
-      <div class="demo-hint">Demo: <b>oficina@exemplo.pt</b> / <b>123456</b></div>
-    </form>
-  </div>
-</main>
+        <div class="campo">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="oficina@exemplo.pt" autocomplete="email" required>
+        </div>
 
-<?php require __DIR__ . '/includes/footer.php'; ?>
+        <div class="campo">
+            <label for="pass">Palavra-passe</label>
+            <div class="pw">
+            <input type="password" id="pass" placeholder="••••••••" autocomplete="current-password" required>
+            <button type="button" class="ver" id="ver">Mostrar</button>
+            </div>
+        </div>
+
+        <div class="linha">
+            <label><input type="checkbox" id="lembrar"> Manter sessão iniciada</label>
+            <a href="#" id="esqueci">Esqueci-me da palavra-passe</a>
+        </div>
+
+        <p class="erro" id="erro" style="display:none" role="alert"></p>
+        <button type="submit" class="entrar" id="btnEntrar">Entrar</button>
+
+        <p class="novo">Ainda não tem conta? <a href="registro.html" id="linkCriar">Criar conta</a></p>
+        </form>
+    </div>
+    </main>
+    <div class="toast" id="toast"></div>
+    <script src="src/animation.js"></script>
+</body>
