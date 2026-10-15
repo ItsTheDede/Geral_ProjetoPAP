@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrar | LisAM</title>
+<script>try{var t=localStorage.getItem('lisam-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* LisAM: tema plano de peças auto (login, produtos, registo). Sem gradientes. */
+:root{
+  --bg:#fff; --bg2:#f0f0f0; --card:#fff; --ink:#000; --txt:#1f1f1f; --muted:#555; --line:#d9d9d9;
+  --edge:#000; --brand:#ffd500; --link:#000; --soft:#fff4a8; --chipbg:#f0f0f0; --head:#fff;
+  --ok:#16a34a; --baixo:#d97706; --esgotado:#dc2626;
+  --c1:#0057ff; --c2:#ff2e63; --c3:#00a651;
+  --r:6px; --shadow:4px 4px 0 #000;
+}
+[data-theme="dark"]{
+  --bg:#000; --bg2:#141414; --card:#111; --ink:#fff; --txt:#ddd; --muted:#999; --line:#2a2a2a;
+  --edge:#555; --link:#ffd500; --soft:#2b2600; --chipbg:#1c1c1c; --head:#000;
+  --shadow:4px 4px 0 #ffd500;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Archivo,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2,h3{color:var(--ink);letter-spacing:-.025em;font-weight:900}
+:focus-visible{outline:3px solid var(--link);outline-offset:2px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:10px}
+.eyebrow::before{content:"";width:10px;height:10px;background:var(--brand);border:2px solid var(--edge)}
+
+/* Matrícula e ilustração de disco de travão */
+.plate{display:inline-flex;align-items:stretch;background:#fff;color:#000;border:2px solid #000;border-radius:4px;font-family:ui-monospace,Menlo,monospace;font-weight:700;font-size:12px;letter-spacing:.06em;overflow:hidden;white-space:nowrap}
+.plate::before{content:"P";background:#0033a0;color:#fff;padding:0 5px;display:grid;place-items:center;font:700 10px Archivo,sans-serif;letter-spacing:0}
+.plate span{padding:2px 8px}
+.disc{--d1:#000;--d2:#ffd500;position:absolute;pointer-events:none}
+.disc .a{fill:var(--d1)}.disc .b{fill:var(--d2)}
+.hazard{height:18px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='16'%3E%3Crect width='32' height='16' fill='%23ffd500'/%3E%3Cpath d='M16 0h16L16 16H0z'/%3E%3C/svg%3E") repeat-x;background-size:36px 18px;border-top:3px solid #000;border-bottom:3px solid #000}
+
+/* Header */
+header.top{background:var(--head);border-bottom:3px solid var(--edge);position:sticky;top:0;z-index:1000}
+.top-inner{max-width:1160px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:20px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:21px;color:var(--ink);text-decoration:none;letter-spacing:-.03em}
+.brand .mark{width:36px;height:36px;border-radius:8px;background:var(--brand);border:2px solid var(--edge);display:grid;place-items:center}
+.brand .mark svg{stroke:#000}
+.brand b{background:var(--brand);color:#000;padding:0 5px;border-radius:4px;margin-left:2px}
+.top .plate{margin-left:-4px}
+.top nav{display:flex;gap:6px;margin-left:auto;align-items:center}
+.top nav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:600;padding:8px 14px;border-radius:8px}
+.top nav a:hover,.top nav a.active{color:#000;background:var(--brand)}
+.top nav a.cta{background:var(--brand);color:#000;padding:8px 20px;margin-left:6px;font-weight:800;border:2px solid var(--edge);box-shadow:3px 3px 0 var(--edge)}
+.top nav a.cta:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--edge)}
+.theme{border:2px solid var(--edge);background:var(--card);border-radius:8px;width:38px;height:38px;font-size:16px;cursor:pointer;margin-left:4px}
+.burger{display:none;margin-left:auto;border:2px solid var(--edge);background:var(--card);color:var(--ink);border-radius:8px;width:40px;height:40px;font-size:18px;cursor:pointer}
+
+/* Botões */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:2px solid #000;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:800;cursor:pointer;text-decoration:none;font-family:inherit}
+.btn-ghost{background:var(--card);color:var(--ink);border:2px solid var(--edge)}
+.btn-ghost:hover{background:var(--soft)}
+.entrar,.peca .res{background:var(--brand);color:#000;border:2px solid #000;border-radius:8px;font-weight:800;font-family:inherit;cursor:pointer;box-shadow:3px 3px 0 #000}
+.entrar:hover,.peca .res:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 #000}
+
+/* Cartões */
+.peca,.card,.cats a,.vazio-box{background:var(--card);border:2px solid var(--edge);border-radius:var(--r);box-shadow:var(--shadow)}
+.peca,.cats a{transition:transform .15s,box-shadow .15s}
+.peca:hover,.cats a:hover{transform:translate(-3px,-3px);box-shadow:7px 7px 0 var(--cc,var(--edge))}
+.c-c1{--cc:var(--c1)}.c-c2{--cc:var(--c2)}.c-c3{--cc:var(--c3)}
+
+/* Produtos */
+.page-hero{position:relative;overflow:hidden;background:var(--brand);color:#000;border-bottom:3px solid #000;padding:44px 0}
+.page-hero .wrap{position:relative}
+.page-hero h1{color:#000;font-size:clamp(34px,5vw,60px);line-height:1;letter-spacing:-.04em;margin:0 0 10px}
+.page-hero p{margin:0;color:#000;font-weight:500;font-size:16px}
+.page-hero .disc{right:-70px;top:-50px;width:300px}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:14px;margin-bottom:24px}
+.cats a{display:flex;flex-direction:column;align-items:center;gap:10px;text-decoration:none;color:var(--ink);padding:18px 10px;font-size:14px;font-weight:700;cursor:pointer}
+.cats a .ic{font-size:26px;width:54px;height:54px;border-radius:8px;background:var(--soft);border:2px solid var(--edge);display:grid;place-items:center}
+.cats a:hover .ic{background:var(--brand)}
+.cats a.on{background:var(--brand);color:#000}
+.cats a.on .ic{background:#fff}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px;flex:1}
+.chips button{border:2px solid var(--edge);background:var(--card);color:var(--txt);border-radius:6px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.chips button:hover{background:var(--soft)}
+.chips button.on{background:var(--brand);color:#000}
+.toolbar select,.toolbar input[type="text"]{background:var(--card);color:var(--ink);font-family:inherit;border:2px solid var(--edge);border-radius:6px;font-size:14px;padding:10px 14px}
+.toolbar select{padding-right:40px;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.toolbar input[type="text"]{flex:0 1 280px;min-width:220px}
+.pecas{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:24px}
+.peca{--cc:var(--c1);overflow:hidden;display:flex;flex-direction:column}
+.peca .foto{position:relative;height:150px;display:grid;place-items:center;font-size:56px;background:color-mix(in srgb,var(--cc) 18%,var(--card));border-bottom:2px solid var(--edge)}
+.peca .foto .em{transition:transform .2s}
+.peca:hover .foto .em{transform:scale(1.12) rotate(-6deg)}
+.peca .foto strong{position:absolute;top:12px;left:12px;font-size:11px;font-weight:700;background:var(--card);padding:3px 10px;border:2px solid var(--edge);border-radius:4px;color:var(--ink)}
+.peca .foto small{position:absolute;top:12px;right:12px;font-size:11px;font-weight:700;color:#fff;background:var(--ok);padding:4px 10px;border-radius:4px}
+.peca .pb{padding:18px;display:flex;flex-direction:column;gap:4px;flex:1}
+.peca h3{margin:0;font-size:16px;line-height:1.3}
+.peca .ref{margin:0;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:8px}
+.peca .loja{margin:8px 0 0;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.peca .loja::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--cc)}
+.peca .pf{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:16px}
+.peca .preco{font-size:22px;font-weight:900;color:var(--ink);letter-spacing:-.03em}
+.peca .res{padding:9px 18px;font-size:13px}
+.peca .res.ok,.peca .res:disabled{background:var(--ok);color:#fff;box-shadow:none;transform:none;cursor:default}
+.vazio-box{grid-column:1/-1;text-align:center;padding:56px 16px;color:var(--muted);box-shadow:none}
+.vazio-box b{display:block;font-size:34px;margin-bottom:6px}
+.vazio-box .btn{margin-top:16px}
+
+/* Login e registo */
+.login-page{display:grid;grid-template-columns:1.05fr 1fr;min-height:calc(100vh - 62px)}
+.login-side{position:relative;overflow:hidden;background:#000;color:#fff;padding:64px 52px;display:flex;flex-direction:column;justify-content:center;border-right:3px solid #000}
+.login-side>div{position:relative;max-width:500px}
+.login-side .disc{--d1:#ffd500;--d2:#000;right:-90px;bottom:-90px;width:340px}
+.login-side h1{color:#fff;font-size:clamp(30px,3.6vw,46px);line-height:1.08;margin:0 0 16px}
+.login-side .gtext{background:var(--brand);color:#000;padding:0 .12em}
+.login-side .eyebrow{color:var(--brand)}
+.login-side p{color:#b5b5b5;line-height:1.65;margin:0 0 26px}
+.vant{display:flex;flex-direction:column;gap:12px;margin-bottom:28px}
+.vant[hidden]{display:none}
+.vant div{display:flex;align-items:center;gap:12px;font-size:14.5px;color:#ddd}
+.vant span{width:36px;height:36px;border-radius:6px;background:var(--brand);color:#000;display:grid;place-items:center;font-size:17px;flex-shrink:0}
+.lista{display:flex;flex-direction:column;gap:10px}
+.lista>div{display:flex;align-items:center;gap:12px;padding:13px 16px;background:#111;border:2px solid #333;border-radius:6px;font-size:14px}
+.lista>div:hover{background:#1c1c1c;border-color:var(--brand)}
+.lista i{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.lista .c-c1 i{background:var(--c1)}.lista .c-c2 i{background:var(--c2)}.lista .c-c3 i{background:var(--c3)}
+.lista b{font-weight:600}
+.lista span{color:#999;margin-left:auto;font-size:13px}
+.form-wrap{display:flex;justify-content:center;align-items:center;padding:40px 20px}
+.card{padding:40px;width:100%;max-width:430px}
+.card.wide{max-width:520px;padding:38px}
+.card h2{margin:0 0 4px;font-size:28px}
+.card .sub{color:var(--muted);font-size:14px;margin:0 0 22px}
+.tipo-conta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 22px}
+.opt{position:relative;display:flex;align-items:center;gap:10px;padding:12px;border:2px solid var(--edge);border-radius:6px;cursor:pointer;background:var(--card)}
+.opt:hover{background:var(--soft)}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt .ico{width:36px;height:36px;border-radius:6px;background:var(--chipbg);border:2px solid var(--edge);display:grid;place-items:center;font-size:17px;flex-shrink:0}
+.opt strong{display:block;color:var(--ink);font-size:14px;line-height:1.2}
+.opt small{display:block;color:var(--muted);font-size:12px;line-height:1.3;margin-top:2px}
+.opt.on{background:var(--brand);box-shadow:3px 3px 0 var(--edge)}
+.opt.on strong,.opt.on small{color:#000}
+.opt.on .ico{background:#fff}
+.opt:focus-within{outline:3px solid var(--link);outline-offset:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.campo{margin-bottom:18px;display:flex;flex-direction:column;gap:7px}
+.campo[hidden]{display:none}
+.campo.full{grid-column:1/-1}
+.campo label{font-size:13px;font-weight:700;color:var(--ink)}
+.campo input,.campo select{padding:12px 15px;border:2px solid var(--edge);border-radius:6px;font-size:15px;background:var(--card);color:var(--ink);font-family:inherit;width:100%}
+.campo select{-webkit-appearance:none;appearance:none;padding-right:38px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.campo input:focus,.campo select:focus{outline:3px solid var(--link);outline-offset:1px}
+.campo.bad input,.campo.bad select{border-color:var(--esgotado)}
+.campo .msg{font-size:12px;color:var(--esgotado);margin:0}
+.pw{position:relative;display:flex}
+.pw input{flex:1;padding-right:90px}
+.pw .ver{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--link);text-decoration:underline;font-size:13px;font-weight:700;cursor:pointer;padding:7px 11px;border-radius:6px;font-family:inherit}
+.pw .ver:hover{background:var(--brand);color:#000}
+.forca{display:flex;gap:4px;margin-top:2px;align-items:center}
+.forca i{flex:1;height:6px;background:var(--chipbg);border:1px solid var(--edge)}
+.forca small{font-size:12px;color:var(--muted);margin-left:8px;white-space:nowrap}
+.termos{display:flex;align-items:flex-start;gap:9px;font-size:13px;color:var(--muted);margin:4px 0 20px;cursor:pointer}
+.termos input{margin-top:3px}
+.linha{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin:8px 0 22px;color:var(--muted);gap:8px;flex-wrap:wrap}
+.linha label{display:flex;align-items:center;gap:7px;cursor:pointer}
+.linha a,.novo a,.termos a{color:var(--link);text-decoration:underline;font-weight:600}
+.erro{border:2px solid var(--esgotado);background:rgba(220,38,38,.1);color:var(--esgotado);padding:11px 15px;border-radius:6px;font-size:13px;margin:0 0 16px}
+.erro.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.entrar{width:100%;padding:14px;font-size:15px}
+.entrar:disabled{opacity:.8;cursor:not-allowed;transform:none}
+.novo{text-align:center;font-size:13px;color:var(--muted);margin:22px 0 0}
+.ok-box{text-align:center;padding:10px 0}
+.ok-box .tick{width:72px;height:72px;border:3px solid #000;background:var(--ok);color:#fff;font-size:36px;display:grid;place-items:center;margin:0 auto 18px;border-radius:8px;animation:pop .4s both}
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.ok-box p{color:var(--muted);margin:0 0 22px}
+.ok-box .entrar{display:inline-block;text-decoration:none;width:auto;padding:13px 28px}
+
+/* Footer e toast */
+footer.foot{background:#000;color:#9a9a9a;padding:56px 20px 28px;font-size:14px}
+.foot-grid{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:32px}
+.foot .brand{color:#fff;margin-bottom:12px}
+.foot h4{color:#fff;margin:0 0 12px;font-size:14px}
+.foot-grid a:not(.brand){display:block;color:#9a9a9a;text-decoration:none;padding:4px 0}
+.foot-grid a:not(.brand):hover{color:var(--brand)}
+.foot p{margin:0;max-width:340px}
+.foot .copy{max-width:1160px;margin:34px auto 0;padding-top:22px;border-top:1px solid #333;font-size:13px;text-align:center}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(90px);background:#000;color:var(--brand);padding:14px 24px;border:2px solid var(--brand);border-radius:6px;font-size:14px;font-weight:600;transition:.3s;z-index:9999;opacity:0;pointer-events:none}
+.toast.on{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media(max-width:860px){
+  .burger{display:block}
+  .top nav{display:none;position:absolute;top:100%;left:0;right:0;background:var(--card);border-bottom:3px solid var(--edge);flex-direction:column;align-items:stretch;padding:12px 20px 16px;margin:0}
+  .top nav.open{display:flex}
+  .top nav a.cta{margin:6px 0 0;text-align:center}
+  .theme{align-self:flex-start;margin:6px 0 0}
+  .foot-grid,.login-page{grid-template-columns:1fr}
+  .login-side{padding:44px 24px;border-right:0;border-bottom:3px solid #000}
+}
+@media(max-width:560px){.hide-s{display:none}}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}.card,.card.wide{padding:28px 22px}.tipo-conta{grid-template-columns:1fr}.page-hero .disc{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <a href="index.html" class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></span><span>Lis<b>AM</b></span></a>
+    <span class="plate hide-s"><span>PEÇAS AUTO</span></span>
+    <button class="burger" aria-label="Menu">☰</button>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="products.html">Produtos</a>
+      <button class="theme" id="tema" type="button" aria-label="Alternar tema claro/escuro">🌙</button>
+      <a href="login.html" class="cta">Entrar</a>
+    </nav>
+  </div>
+</header>
+
+<main class="login-page">
+  <div class="login-side">
+    <svg class="disc" viewBox="0 0 200 200" aria-hidden="true"><defs><circle id="fh" cx="100" cy="30" r="7"/></defs><circle class="a" cx="100" cy="100" r="96"/><circle class="b" cx="100" cy="100" r="82"/><circle class="a" cx="100" cy="100" r="64"/><g class="b"><use href="#fh"/><use href="#fh" transform="rotate(45 100 100)"/><use href="#fh" transform="rotate(90 100 100)"/><use href="#fh" transform="rotate(135 100 100)"/><use href="#fh" transform="rotate(180 100 100)"/><use href="#fh" transform="rotate(225 100 100)"/><use href="#fh" transform="rotate(270 100 100)"/><use href="#fh" transform="rotate(315 100 100)"/></g><circle class="b" cx="100" cy="100" r="30"/><circle class="a" cx="100" cy="100" r="22"/><g class="b"><circle cx="100" cy="86" r="4"/><circle cx="114" cy="100" r="4"/><circle cx="100" cy="114" r="4"/><circle cx="86" cy="100" r="4"/></g></svg>
+    <div>
+      <span class="eyebrow" id="sideEyebrow">Área de parceiros</span>
+      <h1 id="sideTitulo">Bem-vindo de volta à <span class="gtext">oficina</span>.</h1>
+      <p id="sideTexto">Entre na sua conta para reservar peças auto, acompanhar encomendas e levantar na loja ou receber no próprio dia.</p>
+      <div class="vant" id="vantEmpresa">
+        <div><span>⚡</span>Reserve peças em segundos</div>
+        <div><span>📍</span>Levante na loja mais próxima</div>
+        <div><span>🚚</span>Entrega no próprio dia num raio de 30 km</div>
+      </div>
+      <div class="vant" id="vantCliente" hidden>
+        <div><span>🔎</span>Pesquise peças pela referência ou pelo carro</div>
+        <div><span>🛒</span>Veja as suas reservas num só sítio</div>
+        <div><span>📍</span>Levante junto de quem tem em stock, perto de si</div>
+      </div>
+      <div class="lista">
+        <div class="c-c1"><i></i><b>Samiparts</b><span>Flandes</span></div>
+        <div class="c-c2"><i></i><b>Guipeças</b><span>Marinha Grande</span></div>
+        <div class="c-c3"><i></i><b>Gamipeças</b><span>Pombal</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-wrap">
+    <form class="card" id="loginForm" novalidate>
+      <h2>Entrar</h2>
+      <p class="sub" id="subTxt">Acesso para oficinas e empresas parceiras.</p>
+
+      <div class="tipo-conta" role="radiogroup" aria-label="Tipo de conta">
+        <label class="opt" id="optCliente">
+          <input type="radio" name="conta" value="cliente">
+          <span class="ico">👤</span>
+          <span><strong>Cliente</strong><small>Particular</small></span>
+        </label>
+        <label class="opt on" id="optEmpresa">
+          <input type="radio" name="conta" value="empresa" checked>
+          <span class="ico">🔧</span>
+          <span><strong>Empresa</strong><small>Oficina ou outra</small></span>
+        </label>
+      </div>
+
+      <div class="campo">
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="oficina@exemplo.pt" autocomplete="email" required>
+      </div>
+
+      <div class="campo">
+        <label for="pass">Palavra-passe</label>
+        <div class="pw">
+          <input type="password" id="pass" placeholder="••••••••" autocomplete="current-password" required>
+          <button type="button" class="ver" id="ver">Mostrar</button>
+        </div>
+      </div>
+
+      <div class="linha">
+        <label><input type="checkbox" id="lembrar"> Manter sessão iniciada</label>
+        <a href="#" id="esqueci">Esqueci-me da palavra-passe</a>
+      </div>
+
+      <p class="erro" id="erro" style="display:none" role="alert"></p>
+      <button type="submit" class="entrar" id="btnEntrar">Entrar</button>
+
+      <p class="novo">Ainda não tem conta? <a href="registro.html" id="linkCriar">Criar conta</a></p>
+    </form>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- Utilitários globais ---------- */
+const $ = s => document.querySelector(s);
+function toast(msg, ms = 2400){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('on'), ms);
+}
+
+/* Menu móvel */
+const burger = $('.burger');
+if (burger) burger.addEventListener('click', () => $('.top nav').classList.toggle('open'));
+
+/* Tema claro/escuro */
+const temaBtn = $('#tema');
+function pintarTema(){ if (temaBtn) temaBtn.textContent = document.documentElement.dataset.theme === 'dark' ? '☀️' : '🌙'; }
+pintarTema();
+if (temaBtn) temaBtn.addEventListener('click', () => {
+  const novo = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = novo;
+  try { localStorage.setItem('lisam-theme', novo); } catch (e) {}
+  pintarTema();
+});
+
+/* ---------- Textos dinâmicos por tipo de conta ---------- */
+const textos = {
+  empresa: {
+    eyebrow: 'Área de parceiros',
+    titulo: 'Bem-vindo de volta à <span class="gtext">oficina</span>.',
+    texto: 'Entre na sua conta para reservar peças auto, acompanhar encomendas e levantar na loja ou receber no próprio dia.',
+    sub: 'Acesso para oficinas e empresas parceiras.',
+    emailPh: 'oficina@exemplo.pt',
+    dica: 'oficina@exemplo.pt / 123456'
+  },
+  cliente: {
+    eyebrow: 'Área de cliente',
+    titulo: 'Bem-vindo de volta à <span class="gtext">estrada</span>.',
+    texto: 'Entre na sua conta para pesquisar peças auto, guardar reservas e levantar junto de quem tem stock, perto de si.',
+    sub: 'Acesso para clientes particulares.',
+    emailPh: 'cliente@exemplo.pt',
+    dica: 'demo@lam.pt / demo'
+  }
+};
+
+const tipoConta = () => document.querySelector('input[name="conta"]:checked').value;
+
+function aplicarTipo(){
+  const t = tipoConta(), x = textos[t];
+  $('#optCliente').classList.toggle('on', t === 'cliente');
+  $('#optEmpresa').classList.toggle('on', t === 'empresa');
+  $('#vantEmpresa').hidden = t !== 'empresa';
+  $('#vantCliente').hidden = t !== 'cliente';
+  $('#sideEyebrow').textContent = x.eyebrow;
+  $('#sideTitulo').innerHTML = x.titulo;
+  $('#sideTexto').textContent = x.texto;
+  $('#subTxt').textContent = x.sub;
+  $('#email').placeholder = x.emailPh;
+  $('#erro').style.display = 'none';
+}
+
+document.querySelectorAll('input[name="conta"]').forEach(r => r.addEventListener('change', aplicarTipo));
+if (new URLSearchParams(location.search).get('tipo') === 'cliente') {
+  document.querySelector('input[value="cliente"]').checked = true;
+}
+aplicarTipo();
+
+/* ---------- Palavra-passe (mostrar/ocultar) ---------- */
+$('#ver').addEventListener('click', () => {
+  const p = $('#pass');
+  const mostrar = p.type === 'password';
+  p.type = mostrar ? 'text' : 'password';
+  $('#ver').textContent = mostrar ? 'Ocultar' : 'Mostrar';
+});
+
+$('#esqueci').addEventListener('click', e => {
+  e.preventDefault();
+  toast('Pedido de recuperação enviado (demo).');
+});
+
+/* ---------- Contas de demonstração (sem servidor) ---------- */
+const utilizadoresDemo = {
+  'oficina@exemplo.pt': { nome:'Oficina Demo', pass:'123456', tipo:'empresa' },
+  'demo@lam.pt':        { nome:'Demo',         pass:'demo',   tipo:'cliente' }
+};
+let tentativas = 0;
+
+$('#loginForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const email = $('#email').value.trim().toLowerCase();
+  const pass  = $('#pass').value;
+  const tipo  = tipoConta();
+  const erro  = $('#erro');
+
+  if (tentativas >= 5){
+    erro.textContent = 'Demasiadas tentativas. Recarregue a página.';
+    erro.style.display = 'block';
+    return;
+  }
+  if (!email || !pass){
+    erro.textContent = 'Introduza um email e uma palavra-passe válidos.';
+    erro.style.display = 'block';
+    return;
+  }
+  const u = utilizadoresDemo[email];
+  if (u && u.pass === pass){
+    if (u.tipo !== tipo){
+      erro.textContent = u.tipo === 'empresa'
+        ? 'Esta é uma conta de empresa. Selecione "Empresa" para entrar.'
+        : 'Esta é uma conta de cliente. Selecione "Cliente" para entrar.';
+      erro.style.display = 'block';
+      erro.classList.remove('shake'); void erro.offsetWidth; erro.classList.add('shake');
+      return;
+    }
+    erro.style.display = 'none';
+    try { sessionStorage.setItem('lam-sessao', JSON.stringify({ nome:u.nome, tipo:u.tipo })); } catch (err) {}
+    const btn = $('#btnEntrar');
+    btn.disabled = true; btn.textContent = 'A entrar…';
+    toast('Bem-vindo, ' + u.nome + '!');
+    setTimeout(() => {
+      btn.textContent = 'Entrado ✓';
+      btn.style.background = 'var(--ok)'; btn.style.color = '#fff';
+      setTimeout(() => location.href = 'index.html', 700);
+    }, 600);
+    return;
+  }
+  tentativas++;
+  erro.textContent = 'Email ou palavra-passe incorretos.';
+  erro.style.display = 'block';
+  erro.classList.remove('shake'); void erro.offsetWidth; erro.classList.add('shake');
+  toast('Credenciais inválidas (demo: ' + textos[tipo].dica + ')');
+});
+</script>
+</body>
+</html>
