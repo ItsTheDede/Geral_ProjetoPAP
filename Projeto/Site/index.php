@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     
     <!-- LIGAÇÃO AO TEU CSS LOCAL -->
-    <link rel="stylesheet" href="src/background.css">
+    <link rel="stylesheet" href="scr/backgroud.css">
 </head>
 <body>
     <header class="top">
