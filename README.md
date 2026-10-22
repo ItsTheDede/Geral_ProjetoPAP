@@ -25,7 +25,6 @@ Este projeto cumpre rigorosamente os requisitos exigidos para a Prova de Aptidã
 O projeto está estruturado com as seguintes tecnologias no seu desenvolvimento:
 
 * **Frontend:** 
-  * `HTML5`[cite: 7]
   * `CSS3`[cite: 7]
   * `JavaScript`[cite: 7] *(Interfaces dinâmicas e responsivas)*
 * **Backend:** 
