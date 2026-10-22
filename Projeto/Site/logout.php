@@ -1,6 +1,5 @@
 <?php
-require __DIR__ . '/includes/config.php';
-$_SESSION = [];
-session_destroy();
-header('Location: index.php');
+require __DIR__ . '/includes/auth.php';
+fazerLogout();
+header("Location: login.php");
 exit;
