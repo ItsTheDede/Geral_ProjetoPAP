@@ -34,6 +34,8 @@ try {
         <nav>
         <a href="index.php">Início</a>
         <a href="products.php" class="active">Produtos</a>
+        <a href="parceiros.php">Parcerias</a>
+        <a href="about.php">Sobre o projeto</a>
         <button class="theme" id="tema" type="button" aria-label="Alternar tema claro/escuro">🌙</button>
         <?php if (utilizadorAutenticado()): ?>
             <a href="dashboard.php" class="cta">Painel</a>

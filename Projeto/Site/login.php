@@ -70,6 +70,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <nav>
           <a href="index.php">Início</a>
           <a href="products.php">Produtos</a>
+          <a href="parceiros.php">Parcerias</a>
+          <a href="about.php">Sobre o projeto</a>
           <a href="login.php" class="cta">Entrar</a>
         </nav>
       </div>
