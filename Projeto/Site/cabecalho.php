@@ -8,8 +8,8 @@
  *   $cabecalhoJs  -> true se a página NÃO carrega o animations.js (liga tema, menu e burger aqui)
  */
 
-require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/perfil.php';
+require_once __DIR__ . '/includes/config.php';
+require_once __DIR__ . '/includes/perfil.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

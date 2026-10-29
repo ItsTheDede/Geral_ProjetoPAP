@@ -220,7 +220,7 @@ $cabecalhoJs = true; // esta página não carrega animations.js
     </style>
 </head>
 <body>
-<?php require __DIR__ . '/includes/cabecalho.php'; ?>
+<?php require __DIR__ . '/cabecalho.php'; ?>
 
 <main class="def-wrap">
     <h1>Definições da conta</h1>
