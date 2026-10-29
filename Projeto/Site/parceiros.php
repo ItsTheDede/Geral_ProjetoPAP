@@ -26,6 +26,10 @@ function iniciais(string $nome): string {
     }
     return $i;
 }
+$nomeUtilizador = '';
+if (utilizadorAutenticado()) {
+    $nomeUtilizador = $_SESSION['nome'] ?? $_SESSION['nome_empresa'] ?? 'Utilizador';
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt">
@@ -79,9 +83,21 @@ function iniciais(string $nome): string {
         <a href="about.php">Sobre o projeto</a>
         <button class="theme" id="tema" type="button" aria-label="Alternar tema claro/escuro">🌙</button>
         <?php if (utilizadorAutenticado()): ?>
-            <a href="dashboard.php" class="cta">Painel</a>
+            <div class="user-menu">
+                <button class="user-btn" id="userBtn" type="button" aria-haspopup="true" aria-expanded="false">
+                    <span class="avatar">👤</span>
+                    <span class="nome"><?= h($nomeUtilizador) ?></span>
+                    <span class="seta">▼</span>
+                </button>
+                <div class="dropdown" id="userDropdown" hidden>
+                    <a href="perfil.php"><span>⚙️</span> Definições</a>
+                    <a href="logout.php" class="sair"><span>🚪</span> Terminar sessão</a>
+                </div>
+            </div><!-- fecha .user-menu -->
         <?php else: ?>
+            <!-- Botões para quem não está logado -->
             <a href="login.php" class="cta">Entrar</a>
+            <a href="registro.php" class="cta btn-ghost" style="margin-left: 6px;">Criar conta</a>
         <?php endif; ?>
         </nav>
     </div>
