@@ -42,10 +42,16 @@
     ['Motor','⚙️'],['Travagem','🛑'],['Suspensão','🔩'],['Elétrica','⚡'],
     ['Arrefecimento','❄️'],['Iluminação','💡'],['Pneus','🛞'],['Carroçaria','🚗']
   ];
+
+  // Pasta dos logótipos dos parceiros (relativa à index.php)
+  const PASTA_LOGOS = 'assets/images/parcerias/';
+
+  // "logo" = nome do ficheiro dentro de PASTA_LOGOS.
+  // Se o ficheiro não existir, o cartão mostra a sigla automaticamente.
   const parceiros = [
-    {cor:'c1', nome:'Samiparts', sigla:'LP', desc:'Peças originais e equivalentes', local:'Flandes',        nota:'4.8'},
-    {cor:'c2', nome:'Guipeças',  sigla:'LM', desc:'Peças multimarca',              local:'Marinha Grande', nota:'4.6'},
-    {cor:'c3', nome:'Gamipeças', sigla:'CA', desc:'Peças e acessórios',            local:'Pombal',         nota:'4.9'}
+    {cor:'c1', nome:'Samiparts', sigla:'SP', logo:'samiparts.svg',                 desc:'Peças originais e equivalentes', local:'Flandes',        nota:'4.8'},
+    {cor:'c2', nome:'Guipeças',  sigla:'GP', logo:'guipecas.svg',                  desc:'Peças multimarca',              local:'Marinha Grande', nota:'4.6'},
+    {cor:'c3', nome:'Gamipeças', sigla:'GA', logo:'GAMIPECAS_Logotipo_2019.svg',   desc:'Peças e acessórios',            local:'Pombal',         nota:'4.9'}
   ];
   const lojas = [
     {nome:'Samiparts', sigla:'SP', cor:'#0057ff', tipo:'Loja', info:'R. da Primavera B1, 3100-339 Flandes', coords:[39.90397077796481, -8.633328093923474], gmaps:'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3060.679557972519!2d-8.636278523758442!3d39.903806171526675!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd2242ad02d70a0b%3A0xcbb75624fabda40!2sSamiparts%20-%20Loja%20Pombal!5e0!3m2!1spt-PT!2spt!4v1791985627806!5m2!1spt-PT!2spt'},
@@ -97,9 +103,15 @@
   if (parceirosList) {
     parceirosList.innerHTML = parceiros.map(p => {
       const n = pecas.filter(x => x.loja === p.nome).length;
+
+      // Logótipo do parceiro; se falhar a carregar, volta a mostrar a sigla
+      const avatar = p.logo
+        ? `<div class="av" style="background:#fff;padding:6px"><img src="${esc(PASTA_LOGOS + p.logo)}" alt="${esc(p.nome)}" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block" onerror="this.parentNode.removeAttribute('style');this.parentNode.textContent='${esc(p.sigla)}'"></div>`
+        : `<div class="av">${esc(p.sigla)}</div>`;
+
       return `
       <div class="parceiro c-${p.cor} rv" data-loja="${esc(p.nome)}">
-        <div class="av">${esc(p.sigla)}</div>
+        ${avatar}
         <b>${esc(p.nome)}</b>
         <div class="d">${esc(p.desc)}</div>
         <div class="meta"><span class="tag">📍 ${esc(p.local)}</span><span class="tag ver">✓ Verificado</span></div>
