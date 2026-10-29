@@ -14,7 +14,7 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 $host = "127.0.0.1";
 $port = 3306;
 $user = "root";
-$pass = ""; // XAMPP normalmente não tem password
+$pass = "";
 $db   = "projeto_pap";
 
 try {

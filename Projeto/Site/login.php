@@ -7,9 +7,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Se já está autenticado, vai para o dashboard
+// Se já está autenticado, vai para o index
 if (utilizadorAutenticado()) {
-    header("Location: dashboard.php");
+    header("Location: index.php.php");
     exit;
 }
 
@@ -80,7 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($u) {
                 unset($_SESSION['login_falhas'], $_SESSION['login_bloqueado_ate']);
                 fazerLogin((int)$u['id'], $tipo, $u['nome'], $u['email'], $lembrar);
-                header("Location: dashboard.php");
+                header("Location: index.php");
                 exit;
             }
 

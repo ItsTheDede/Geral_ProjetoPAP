@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/includes/auth.php';
-fazerLogout();
-header("Location: login.php");
+session_start();
+session_destroy();
+header("Location: index.php");
 exit;
+?>

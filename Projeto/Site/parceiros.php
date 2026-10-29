@@ -155,18 +155,6 @@ function iniciais(string $nome): string {
             </ul>
         </div>
     </section>
-
-    <section class="cta-band rv" style="margin-bottom:0">
-        <div>
-        <h2>Pronto para encontrar a peça certa?</h2>
-        <p>Entre com a sua conta de oficina e reserve em segundos.</p>
-        </div>
-        <?php if (utilizadorAutenticado()): ?>
-            <a class="btn btn-light" href="dashboard.php">Ir para o painel →</a>
-        <?php else: ?>
-            <a class="btn btn-light" href="login.php">Entrar na plataforma →</a>
-        <?php endif; ?>
-    </section>
     </main>
 
     <div class="hazard"></div>
