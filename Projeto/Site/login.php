@@ -2,44 +2,93 @@
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/auth.php';
 
+// Garante que a sessão existe (necessária para $_SESSION e para o limite de tentativas)
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Se já está autenticado, vai para o dashboard
 if (utilizadorAutenticado()) {
     header("Location: dashboard.php");
     exit;
 }
 
+// Imagem de fundo do painel da esquerda
+const LOGIN_FUNDO = 'assets/images/social/imagess.svg';
+
 // Mensagem vinda do registo (lida uma só vez)
 $sucesso = $_SESSION['registo_sucesso'] ?? '';
 unset($_SESSION['registo_sucesso']);
 
-$erro = '';
+// Limite de tentativas falhadas (por sessão)
+const LOGIN_MAX_TENTATIVAS = 5;
+const LOGIN_BLOQUEIO_SEG   = 300; // 5 minutos
+
+$erro  = '';
+$email = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email   = trim($_POST['email'] ?? '');
     $pass    = $_POST['pass'] ?? '';
-    $tipo    = (($_POST['conta'] ?? 'empresa') === 'cliente') ? 'cliente' : 'empresa';
     $lembrar = !empty($_POST['lembrar']);
+
+    $bloqueadoAte = $_SESSION['login_bloqueado_ate'] ?? 0;
 
     if (!csrfValido()) {
         $erro = "Sessão expirada. Recarrega a página e tenta novamente.";
+    } elseif ($bloqueadoAte > time()) {
+        $minutos = (int)ceil(($bloqueadoAte - time()) / 60);
+        $erro = "Demasiadas tentativas. Tenta novamente dentro de $minutos minuto(s).";
     } elseif ($email === '' || $pass === '') {
         $erro = "Preenche o email e a palavra-passe.";
     } else {
         try {
-            // $tabela e $colNome vêm de uma lista fixa, nunca do utilizador
-            $tabela  = $tipo === 'cliente' ? 'clientes' : 'empresas';
-            $colNome = $tipo === 'cliente' ? 'nome' : 'nome_empresa';
+            // Tabelas e colunas vêm desta lista fixa, nunca do utilizador.
+            // Como já não há escolha de tipo de conta, procura nas duas.
+            $contas = [
+                'empresa' => ['tabela' => 'empresas', 'col' => 'nome_empresa'],
+                'cliente' => ['tabela' => 'clientes', 'col' => 'nome'],
+            ];
 
-            $stmt = $conn->prepare("SELECT id, email, password_hash, $colNome AS nome FROM $tabela WHERE email = ? LIMIT 1");
-            $stmt->bind_param("s", $email);
-            $stmt->execute();
-            $u = $stmt->get_result()->fetch_assoc();
-            $stmt->close();
+            $u = null;
+            $tipo = null;
+            $emailExiste = false;
 
-            if ($u && password_verify($pass, $u['password_hash'])) {
+            foreach ($contas as $t => $c) {
+                $stmt = $conn->prepare("SELECT id, email, password_hash, {$c['col']} AS nome FROM {$c['tabela']} WHERE email = ? LIMIT 1");
+                $stmt->bind_param("s", $email);
+                $stmt->execute();
+                $row = $stmt->get_result()->fetch_assoc();
+                $stmt->close();
+
+                if ($row) {
+                    $emailExiste = true;
+                    if (password_verify($pass, $row['password_hash'])) {
+                        $u = $row;
+                        $tipo = $t;
+                        break;
+                    }
+                }
+            }
+
+            if (!$emailExiste) {
+                // Trabalho equivalente quando o email não existe, para o tempo
+                // de resposta não revelar que contas existem
+                password_hash($pass, PASSWORD_DEFAULT);
+            }
+
+            if ($u) {
+                unset($_SESSION['login_falhas'], $_SESSION['login_bloqueado_ate']);
                 fazerLogin((int)$u['id'], $tipo, $u['nome'], $u['email'], $lembrar);
                 header("Location: dashboard.php");
                 exit;
+            }
+
+            // Falhou: conta a tentativa e bloqueia se exceder o limite
+            $_SESSION['login_falhas'] = ($_SESSION['login_falhas'] ?? 0) + 1;
+            if ($_SESSION['login_falhas'] >= LOGIN_MAX_TENTATIVAS) {
+                $_SESSION['login_bloqueado_ate'] = time() + LOGIN_BLOQUEIO_SEG;
+                $_SESSION['login_falhas'] = 0;
             }
             $erro = "Credenciais inválidas. Verifica o email e a palavra-passe.";
         } catch (mysqli_sql_exception $e) {
@@ -57,8 +106,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Entrar | LAM</title>
     <script>try{var t=localStorage.getItem('lisam-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="src/backgroud.css">
+    <style>
+        /* Imagem de fundo no painel da esquerda, com escurecimento para o texto ler-se bem */
+        .login-side {
+            background-image:
+                linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.7)),
+                url('<?= h(LOGIN_FUNDO) ?>');
+            background-size: cover;
+            background-position: center bottom;
+            background-repeat: no-repeat;
+        }
+    </style>
 </head>
 <body>
     <header class="top">
@@ -80,9 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <main class="login-page">
       <div class="login-side">
         <div>
-          <span class="eyebrow">Área de parceiros</span>
-          <h1>Bem-vindo de volta à <span class="gtext">oficina</span>.</h1>
-          <p>Entre na sua conta para reservar peças auto, acompanhar encomendas e levantar na loja ou receber no próprio dia.</p>
+          <h1>Peças certas, <span class="gtext">sem espera</span>.</h1>
         </div>
       </div>
 
@@ -96,24 +155,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <p class="ok" style="display:block" role="status"><?= h($sucesso) ?></p>
           <?php endif; ?>
 
-          <div class="tipo-conta" role="radiogroup" aria-label="Tipo de conta">
-            <label class="opt" id="optCliente">
-              <input type="radio" name="conta" value="cliente" <?= (($_POST['conta'] ?? '') === 'cliente') ? 'checked' : '' ?>>
-              <span class="ico">👤</span>
-              <span><strong>Cliente</strong><small>Particular</small></span>
-            </label>
-            <label class="opt on" id="optEmpresa">
-              <input type="radio" name="conta" value="empresa" <?= (($_POST['conta'] ?? 'empresa') === 'empresa') ? 'checked' : '' ?>>
-              <span class="ico">🔧</span>
-              <span><strong>Empresa</strong><small>Oficina ou outra</small></span>
-            </label>
-          </div>
-
           <div class="campo">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" placeholder="oficina@exemplo.pt"
                    autocomplete="email" required
-                   value="<?= h($_POST['email'] ?? '') ?>">
+                   value="<?= h($email) ?>">
           </div>
 
           <div class="campo">
@@ -126,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
           <div class="linha">
             <label><input type="checkbox" name="lembrar"> Manter sessão iniciada</label>
-            <a href="#">Esqueci-me da palavra-passe</a>
+            <a href="recuperar.php">Esqueci-me da palavra-passe</a>
           </div>
 
           <?php if ($erro): ?>
@@ -135,7 +181,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
           <button type="submit" class="entrar">Entrar</button>
 
-          <p class="novo">Ainda não tem conta? <a href="registo.php">Criar conta</a></p>
+          <p class="novo">Ainda não tem conta?<a href="registro.php">Criar conta</a></p>
         </form>
       </div>
     </main>

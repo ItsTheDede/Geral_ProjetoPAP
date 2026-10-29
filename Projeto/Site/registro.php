@@ -8,6 +8,10 @@ if (utilizadorAutenticado()) {
     exit;
 }
 
+// Imagem de fundo do painel da esquerda (dentro de assets/images/social/)
+// Dica: renomeia o ficheiro para algo simples, ex.: registro.svg, e muda aqui.
+const REGISTRO_FUNDO = 'assets/images/social/pessoa-entregando-outra-um-pedaço-de-papel-dois-indivíduos-são-mostrados-em-uma-troca-que-está-oferecendo-para-o-gesto-é-313023587.svg';
+
 /** Valida NIF português (9 dígitos + dígito de controlo). */
 function nifValido(string $nif): bool {
     if (!preg_match('/^\d{9}$/', $nif)) {
@@ -70,12 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         try {
             if ($tipo === 'cliente') {
-                // ATUALIZADO: Adicionados os campos morada, codigo_postal e localidade à query
                 $stmt = $conn->prepare(
                     "INSERT INTO clientes (nome, email, password_hash, telefone, morada, codigo_postal, localidade) 
                      VALUES (?, ?, ?, ?, ?, ?, ?)"
                 );
-                // ATUALIZADO: 7 strings (sssssss) para corresponder aos 7 valores
                 $stmt->bind_param("sssssss", $nome, $email, $hash, $tel, $morada, $cp, $local);
             } else {
                 $stmt = $conn->prepare(
@@ -113,6 +115,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="src/backgroud.css">
+<style>
+    /* Imagem de fundo no painel da esquerda, com escurecimento para o texto ler-se bem */
+    .login-side {
+        background-image:
+            linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.75)),
+            url('<?= h(implode('/', array_map('rawurlencode', explode('/', REGISTRO_FUNDO)))) ?>');
+        background-size: cover;
+        background-position: center bottom;
+        background-repeat: no-repeat;
+    }
+</style>
 </head>
 <body>
 
@@ -155,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <div class="form-wrap">
     <div class="card wide" id="card">
-      <form id="form" method="POST" action="registo.php" novalidate>
+      <form id="form" method="POST" action="registro.php" novalidate>
         <?= csrfCampo() ?>
         <h2>Criar conta</h2>
         <p class="sub" id="subTxt">Pedido de acesso para empresas e oficinas.</p>
@@ -268,7 +281,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <script src="src/animations.js"></script>
 
-<!-- SCRIPT ADICIONADO: Para manter o visual correto se houver erro no servidor -->
+<!-- Mantém o visual correto se houver erro no servidor -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     // Verifica se o utilizador tentou registar como cliente
@@ -279,7 +292,6 @@ document.addEventListener("DOMContentLoaded", function() {
         if (optCliente && optEmpresa) {
             optCliente.classList.add('on');
             optEmpresa.classList.remove('on');
-            // Esconde os campos de empresa se necessário (dependendo do teu JS animations.js)
             document.querySelectorAll('[data-so="empresa"]').forEach(el => el.style.display = 'none');
             const campoNif = document.getElementById('campoNif');
             if(campoNif) campoNif.style.display = 'none';
