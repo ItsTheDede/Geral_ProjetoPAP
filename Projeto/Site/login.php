@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Se já está autenticado, vai para o index
 if (utilizadorAutenticado()) {
-    header("Location: index.php.php");
+    header("Location: index.php");
     exit;
 }
 

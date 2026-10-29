@@ -55,7 +55,7 @@ if (utilizadorAutenticado()) {
                             <span class="seta">▼</span>
                         </button>
                         <div class="dropdown" id="userDropdown" hidden>
-                            <a href="perfil.php"><span>⚙️</span> Definições</a>
+                            <a href="configura.php"><span>⚙️</span> Definições</a>
                             <a href="logout.php" class="sair"><span>🚪</span> Terminar sessão</a>
                         </div>
                     </div><!-- fecha .user-menu -->
