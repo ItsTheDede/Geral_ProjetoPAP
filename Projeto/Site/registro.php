@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Criar conta | LAM</title>
-<script>try{var t=localStorage.getItem('lisam-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+<script>try{var d=document.documentElement,t=localStorage.getItem('lisam-theme'),c=localStorage.getItem('lisam-cor');if(t)d.dataset.theme=t;if(c)d.dataset.cor=c}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="src/backgroud.css">
@@ -280,6 +280,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script src="src/animations.js"></script>
+<script src="src/cores.js"></script>
 
 <!-- Mantém o visual correto se houver erro no servidor -->
 <script>

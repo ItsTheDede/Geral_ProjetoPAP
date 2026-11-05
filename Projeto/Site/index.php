@@ -21,7 +21,7 @@ if (utilizadorAutenticado()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LAM · Peças auto para oficinas · Distrito de Leiria</title>
-    <script>try{var t=localStorage.getItem('lisam-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script>try{var d=document.documentElement,t=localStorage.getItem('lisam-theme'),c=localStorage.getItem('lisam-cor');if(t)d.dataset.theme=t;if(c)d.dataset.cor=c}catch(e){}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -68,7 +68,7 @@ if (utilizadorAutenticado()) {
         </div>
     </header>
 
-    <div class="hero" style="background-image:linear-gradient(rgba(255,213,0,.72),rgba(255,213,0,.72)),url('<?= h($fotoHero) ?>') !important;background-size:cover !important;background-position:center !important">
+    <div class="hero" style="background-image:linear-gradient(color-mix(in srgb,var(--brand) 72%,transparent),color-mix(in srgb,var(--brand) 72%,transparent)),url('<?= h($fotoHero) ?>') !important;background-size:cover !important;background-position:center !important">
         <svg class="deco d1" viewBox="0 0 200 200" aria-hidden="true"><defs><circle id="fh" cx="100" cy="30" r="7"/></defs><circle cx="100" cy="100" r="96" fill="#000"/><circle cx="100" cy="100" r="82" fill="#ffd500"/><circle cx="100" cy="100" r="64" fill="#000"/><g fill="#ffd500"><use href="#fh"/><use href="#fh" transform="rotate(45 100 100)"/><use href="#fh" transform="rotate(90 100 100)"/><use href="#fh" transform="rotate(135 100 100)"/><use href="#fh" transform="rotate(180 100 100)"/><use href="#fh" transform="rotate(225 100 100)"/><use href="#fh" transform="rotate(270 100 100)"/><use href="#fh" transform="rotate(315 100 100)"/></g><circle cx="100" cy="100" r="30" fill="#ffd500"/><circle cx="100" cy="100" r="22" fill="#000"/><g fill="#ffd500"><circle cx="100" cy="86" r="4"/><circle cx="114" cy="100" r="4"/><circle cx="100" cy="114" r="4"/><circle cx="86" cy="100" r="4"/></g></svg>
         <svg class="deco d2" viewBox="0 0 200 200" aria-hidden="true"><defs><rect id="tr" x="90" y="2" width="20" height="16" rx="3"/></defs><circle cx="100" cy="100" r="98" fill="#000"/><g fill="#ffd500"><use href="#tr"/><use href="#tr" transform="rotate(30 100 100)"/><use href="#tr" transform="rotate(60 100 100)"/><use href="#tr" transform="rotate(90 100 100)"/><use href="#tr" transform="rotate(120 100 100)"/><use href="#tr" transform="rotate(150 100 100)"/><use href="#tr" transform="rotate(180 100 100)"/><use href="#tr" transform="rotate(210 100 100)"/><use href="#tr" transform="rotate(240 100 100)"/><use href="#tr" transform="rotate(270 100 100)"/><use href="#tr" transform="rotate(300 100 100)"/><use href="#tr" transform="rotate(330 100 100)"/></g><circle cx="100" cy="100" r="68" fill="#fff" stroke="#ffd500" stroke-width="6"/><g stroke="#000" stroke-width="12" stroke-linecap="round"><path d="M100 100V44M100 100l53 -17M100 100l33 46M100 100l-33 46M100 100l-53 -17"/></g><circle cx="100" cy="100" r="14" fill="#000"/></svg>
 
@@ -183,5 +183,6 @@ if (utilizadorAutenticado()) {
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <script src="src/animations.js"></script>
+    <script src="src/cores.js"></script>
 </body>
 </html>

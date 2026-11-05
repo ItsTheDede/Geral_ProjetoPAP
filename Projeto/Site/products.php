@@ -30,7 +30,7 @@ if (utilizadorAutenticado()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peças auto disponíveis | LAM</title>
-    <script>try{var t=localStorage.getItem('lisam-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script>try{var d=document.documentElement,t=localStorage.getItem('lisam-theme'),c=localStorage.getItem('lisam-cor');if(t)d.dataset.theme=t;if(c)d.dataset.cor=c}catch(e){}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="src/backgroud.css">
@@ -72,7 +72,7 @@ if (utilizadorAutenticado()) {
     </div>
     </header>
 
-    <div class="page-hero" style="background-image:linear-gradient(rgba(255,213,0,.72),rgba(255,213,0,.72)),url('<?= $fotoHeroUrl ?>') !important;background-size:cover !important;background-position:center !important">
+    <div class="page-hero" style="background-image:linear-gradient(color-mix(in srgb,var(--brand) 72%,transparent),color-mix(in srgb,var(--brand) 72%,transparent)),url('<?= $fotoHeroUrl ?>') !important;background-size:cover !important;background-position:center !important">
     <svg class="disc" viewBox="0 0 200 200" aria-hidden="true"><defs><circle id="fh" cx="100" cy="30" r="7"/></defs><circle class="a" cx="100" cy="100" r="96"/><circle class="b" cx="100" cy="100" r="82"/><circle class="a" cx="100" cy="100" r="64"/><g class="b"><use href="#fh"/><use href="#fh" transform="rotate(45 100 100)"/><use href="#fh" transform="rotate(90 100 100)"/><use href="#fh" transform="rotate(135 100 100)"/><use href="#fh" transform="rotate(180 100 100)"/><use href="#fh" transform="rotate(225 100 100)"/><use href="#fh" transform="rotate(270 100 100)"/><use href="#fh" transform="rotate(315 100 100)"/></g><circle class="b" cx="100" cy="100" r="30"/><circle class="a" cx="100" cy="100" r="22"/><g class="b"><circle cx="100" cy="86" r="4"/><circle cx="114" cy="100" r="4"/><circle cx="100" cy="114" r="4"/><circle cx="86" cy="100" r="4"/></g></svg>
     <div class="wrap">
         <h1>Peças auto disponíveis</h1>
@@ -127,5 +127,6 @@ if (utilizadorAutenticado()) {
     </footer>
     <div class="toast" id="toast"></div>
     <script src="src/animations.js"></script>
+    <script src="src/cores.js"></script>
 </body>
 </html>

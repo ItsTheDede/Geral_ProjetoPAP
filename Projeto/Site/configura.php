@@ -181,13 +181,13 @@ $cabecalhoJs = true; // esta página não carrega animations.js
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Definições · LAM</title>
-    <script>try{var t=localStorage.getItem('lisam-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script>try{var d=document.documentElement,t=localStorage.getItem('lisam-theme'),c=localStorage.getItem('lisam-cor');if(t)d.dataset.theme=t;if(c)d.dataset.cor=c}catch(e){}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="src/backgroud.css">
     <style>
-        /* Usa as cores herdadas do tema (claro/escuro): nada de fundos fixos. */
+        /* Usa as cores herdadas do tema (claro/escuro + cor): nada de fundos fixos. */
         .def-wrap { max-width: 720px; margin: 0 auto; padding: 40px 20px 60px; text-align: left; }
         .def-wrap h1 { margin: 0 0 4px; }
         .def-sub { opacity: .7; margin: 0 0 32px; }
@@ -200,11 +200,11 @@ $cabecalhoJs = true; // esta página não carrega animations.js
         .def-field input { padding: 10px 12px; border-radius: 8px; font: inherit; color: inherit;
                            background: color-mix(in srgb, currentColor 6%, transparent);
                            border: 1px solid color-mix(in srgb, currentColor 40%, transparent); }
-        .def-field input:focus-visible, .def-btn:focus-visible { outline: 3px solid #4c8dff; outline-offset: 2px; }
+        .def-field input:focus-visible, .def-btn:focus-visible { outline: 3px solid var(--link); outline-offset: 2px; }
         .def-field small { opacity: .7; }
         .def-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
         .def-btn { padding: 10px 18px; border-radius: 8px; border: 0; cursor: pointer; font: inherit;
-                   font-weight: 700; background: #ffd500; color: #000; }
+                   font-weight: 700; background: var(--brand); color: var(--on); }
         .def-btn:hover { filter: brightness(.95); }
         .def-btn.sec { background: transparent; color: inherit;
                        border: 1px solid color-mix(in srgb, currentColor 50%, transparent); }
@@ -213,7 +213,7 @@ $cabecalhoJs = true; // esta página não carrega animations.js
         .def-err { background: color-mix(in srgb, #d93025 18%, transparent); border-color: #d93025; }
         .def-avatar { width: 112px; height: 112px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
         .def-avatar.ph { display: flex; align-items: center; justify-content: center; font-size: 2.6rem;
-                         font-weight: 700; background: #ffd500; color: #000; }
+                         font-weight: 700; background: var(--brand); color: var(--on); }
         .def-foto { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
         .def-foto form + form { margin-top: 8px; }
         .def-meta { margin: 0 0 16px; opacity: .75; font-size: .9rem; }
@@ -315,5 +315,7 @@ $cabecalhoJs = true; // esta página não carrega animations.js
 
     <a href="index.php" class="btn btn-primary">Voltar ao início</a>
 </main>
+
+<script src="src/cores.js"></script>
 </body>
 </html>

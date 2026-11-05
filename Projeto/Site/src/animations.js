@@ -42,6 +42,70 @@ window.LAM = (function () {
     });
   }
 
+  /* =========================================================
+   cores.js · seletor de cor do tema (placas de trânsito)
+   Cria o botão ao lado do botão de tema (#tema).
+   Carregar DEPOIS do cabeçalho existir (antes de </body>).
+   ========================================================= */
+  (function () {
+    var CORES = [
+      ['amarelo',  'Aviso',      '#ffd500'],
+      ['azul',     'Obrigação',  '#0057b8'],
+      ['vermelho', 'Proibição',  '#d6001c'],
+      ['verde',    'Itinerário', '#00843d'],
+      ['castanho', 'Turismo',    '#7a4a21'],
+      ['laranja',  'Obras',      '#ff7a00']
+    ];
+    var root = document.documentElement;
+    var KEY = 'lisam-cor';
+
+    function atual() { return root.dataset.cor || 'amarelo'; }
+
+    function aplicar(cor) {
+      root.dataset.cor = cor;
+      try { localStorage.setItem(KEY, cor); } catch (e) {}
+      document.querySelectorAll('.cores-lista button').forEach(function (b) {
+        b.setAttribute('aria-pressed', String(b.dataset.cor === cor));
+      });
+    }
+
+    // aplica a cor guardada (caso o <head> não o tenha feito)
+    try { var s = localStorage.getItem(KEY); if (s) root.dataset.cor = s; } catch (e) {}
+
+    var tema = document.getElementById('tema');
+    if (!tema || document.querySelector('.cores')) return;
+
+    var box = document.createElement('div');
+    box.className = 'cores';
+    box.innerHTML =
+      '<button type="button" class="cores-btn" id="coresBtn" aria-haspopup="true" aria-expanded="false" aria-label="Escolher cor do tema"><i></i></button>' +
+      '<div class="cores-lista" id="coresLista" hidden>' +
+      CORES.map(function (c) {
+        return '<button type="button" data-cor="' + c[0] + '" aria-pressed="' + (c[0] === atual()) + '">' +
+              '<i style="background:' + c[2] + '"></i>' + c[1] + '</button>';
+      }).join('') + '</div>';
+    tema.insertAdjacentElement('afterend', box);
+
+    var btn = document.getElementById('coresBtn');
+    var lista = document.getElementById('coresLista');
+
+    function fechar() { lista.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      lista.hidden = !lista.hidden;
+      btn.setAttribute('aria-expanded', String(!lista.hidden));
+    });
+    lista.addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-cor]');
+      if (!b) return;
+      aplicar(b.dataset.cor);
+      fechar();
+    });
+    document.addEventListener('click', function (e) { if (!box.contains(e.target)) fechar(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fechar(); });
+  })();
+
   /* Menu móvel */
   const burger = $('.burger'), nav = $('.top nav');
   if (burger && nav) burger.addEventListener('click', () => nav.classList.toggle('open'));

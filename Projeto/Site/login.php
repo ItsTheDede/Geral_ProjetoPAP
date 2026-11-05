@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entrar | LAM</title>
-    <script>try{var t=localStorage.getItem('lisam-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script>try{var d=document.documentElement,t=localStorage.getItem('lisam-theme'),c=localStorage.getItem('lisam-cor');if(t)d.dataset.theme=t;if(c)d.dataset.cor=c}catch(e){}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -133,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <a href="products.php">Produtos</a>
           <a href="parceiros.php">Parcerias</a>
           <a href="about.php">Sobre o projeto</a>
+          <button class="theme" id="tema" type="button" aria-label="Alternar tema claro/escuro">🌙</button>
           <a href="login.php" class="cta">Entrar</a>
         </nav>
       </div>
@@ -187,5 +188,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </main>
 
     <script src="src/animations.js"></script>
+    <script src="src/cores.js"></script>
 </body>
 </html>

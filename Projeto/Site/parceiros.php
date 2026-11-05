@@ -38,7 +38,7 @@ if (utilizadorAutenticado()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parceiros · LAM · Peças auto para oficinas · Distrito de Leiria</title>
     <meta name="description" content="Conheça as empresas parceiras do LAM: centros de abate, retificadoras e recondicionadores do distrito de Leiria.">
-    <script>try{var t=localStorage.getItem('lisam-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script>try{var d=document.documentElement,t=localStorage.getItem('lisam-theme'),c=localStorage.getItem('lisam-cor');if(t)d.dataset.theme=t;if(c)d.dataset.cor=c}catch(e){}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="src/backgroud.css">
@@ -58,11 +58,11 @@ if (utilizadorAutenticado()) {
         .par-card{display:flex;flex-direction:column;gap:14px;border:1px solid rgba(128,128,128,.3);border-radius:12px;padding:22px}
         .par-card .logo-box{width:100%;height:110px}
         .par-card h3{margin:0}
-        .par-card .tipo{display:inline-block;align-self:flex-start;padding:3px 10px;border-radius:999px;background:#ffd500;color:#111;font-weight:700;font-size:.82rem}
+        .par-card .tipo{display:inline-block;align-self:flex-start;padding:3px 10px;border-radius:999px;background:var(--brand);color:var(--on);font-weight:700;font-size:.82rem}
         .par-card p{margin:0;line-height:1.6;opacity:.85}
         .par-card .meta{font-size:.92rem;opacity:.75}
         .par-card .acoes{margin-top:auto;display:flex;gap:14px;flex-wrap:wrap}
-        .par-card a:focus-visible{outline:3px solid #ffd500;outline-offset:3px}
+        .par-card a:focus-visible{outline:3px solid var(--brand);outline-offset:3px}
 
         .juntar{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
         .juntar p{line-height:1.7;max-width:62ch;margin:0 0 14px}
@@ -187,5 +187,6 @@ if (utilizadorAutenticado()) {
     </footer>
 
     <script src="src/animations.js"></script>
+    <script src="src/cores.js"></script>
 </body>
 </html>

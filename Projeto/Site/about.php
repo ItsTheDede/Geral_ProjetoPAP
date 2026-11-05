@@ -14,7 +14,7 @@ if (utilizadorAutenticado()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sobre o projeto · LAM · Peças auto para oficinas · Distrito de Leiria</title>
     <meta name="description" content="O LAM reúne PMEs do setor automóvel do distrito de Leiria numa só loja de peças B2B, com levantamento no local e entrega no próprio dia.">
-    <script>try{var t=localStorage.getItem('lisam-theme');if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
+    <script>try{var d=document.documentElement,t=localStorage.getItem('lisam-theme'),c=localStorage.getItem('lisam-cor');if(t)d.dataset.theme=t;if(c)d.dataset.cor=c}catch(e){}</script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="src/backgroud.css">
@@ -24,7 +24,7 @@ if (utilizadorAutenticado()) {
         .about-hero h1{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.05;margin:12px 0 18px;max-width:20ch}
         .about-hero .lede{max-width:62ch;font-size:1.1rem;line-height:1.6;opacity:.85}
         .about-nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:40px}
-        .about-nums div{border-top:4px solid #ffd500;padding:14px 0 0}
+        .about-nums div{border-top:4px solid var(--brand);padding:14px 0 0}
         .about-nums strong{display:block;font-size:2.2rem;font-weight:900;line-height:1}
         .about-nums span{display:block;margin-top:6px;font-size:.92rem;opacity:.8}
         .about-split{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
@@ -37,7 +37,7 @@ if (utilizadorAutenticado()) {
         .faq{max-width:780px}
         .faq details{border-bottom:1px solid rgba(128,128,128,.3);padding:16px 0}
         .faq summary{cursor:pointer;font-weight:700;font-size:1.05rem;list-style-position:outside}
-        .faq summary:focus-visible{outline:3px solid #ffd500;outline-offset:4px}
+        .faq summary:focus-visible{outline:3px solid var(--brand);outline-offset:4px}
         .faq details p{margin:12px 0 0;line-height:1.65;max-width:66ch;opacity:.85}
         @media (max-width:760px){.about-split{grid-template-columns:1fr;gap:20px}.about-hero{padding-top:48px}}
     </style>
@@ -207,5 +207,6 @@ if (utilizadorAutenticado()) {
     </footer>
 
     <script src="src/animations.js"></script>
+    <script src="src/cores.js"></script>
 </body>
 </html>
