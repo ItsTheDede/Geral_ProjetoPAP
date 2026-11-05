@@ -12,7 +12,7 @@ if (empty($logoMarca)) {
 // Vai buscar o nome do utilizador logado
 $nomeUtilizador = '';
 if (utilizadorAutenticado()) {
-    $nomeUtilizador = $_SESSION['nome'] ?? $_SESSION['nome_empresa'] ?? 'Utilizador';
+    $nomeUtilizador = nomeSessao();
 }
 ?>
 <!DOCTYPE html>

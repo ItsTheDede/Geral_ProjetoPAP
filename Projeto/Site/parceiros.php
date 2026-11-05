@@ -28,7 +28,7 @@ function iniciais(string $nome): string {
 }
 $nomeUtilizador = '';
 if (utilizadorAutenticado()) {
-    $nomeUtilizador = $_SESSION['nome'] ?? $_SESSION['nome_empresa'] ?? 'Utilizador';
+    $nomeUtilizador = nomeSessao();
 }
 ?>
 <!DOCTYPE html>
@@ -79,7 +79,7 @@ if (utilizadorAutenticado()) {
         <nav>
         <a href="index.php">Início</a>
         <a href="products.php">Produtos</a>
-        <a href="parceiros.php" class="active" aria-current="page">Parceiros</a>
+        <a href="parceiros.php" class="active" aria-current="page">Parcerias</a>
         <a href="about.php">Sobre o projeto</a>
         <button class="theme" id="tema" type="button" aria-label="Alternar tema claro/escuro">🌙</button>
         <?php if (utilizadorAutenticado()): ?>
@@ -90,7 +90,7 @@ if (utilizadorAutenticado()) {
                     <span class="seta">▼</span>
                 </button>
                 <div class="dropdown" id="userDropdown" hidden>
-                    <a href="perfil.php"><span>⚙️</span> Definições</a>
+                    <a href="configura.php"><span>⚙️</span> Definições</a>
                     <a href="logout.php" class="sair"><span>🚪</span> Terminar sessão</a>
                 </div>
             </div><!-- fecha .user-menu -->
@@ -180,8 +180,8 @@ if (utilizadorAutenticado()) {
         <a href="index.php" class="brand"><span class="mark"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></span><span>L<b>AM</b></span></a>
         <p>Loja de peças auto B2B que liga oficinas às empresas de peças do distrito de Leiria.</p>
         </div>
-        <div><h4>Plataforma</h4><a href="products.php">Peças</a><a href="parceiros.php">Parceiros</a><a href="index.php#lojas">Lojas</a></div>
-        <div><h4>Conta</h4><a href="login.php">Entrar</a><a href="registo.php">Pedir acesso</a><a href="about.php">Sobre o projeto</a></div>
+        <div><h4>Plataforma</h4><a href="products.php">Peças</a><a href="parceiros.php">Parcerias</a><a href="index.php#lojas">Lojas</a></div>
+        <div><h4>Conta</h4><a href="login.php">Entrar</a><a href="registro.php">Pedir acesso</a><a href="about.php">Sobre o projeto</a></div>
     </div>
     <div class="copy">© LAM · Peças auto B2B · Leiria</div>
     </footer>

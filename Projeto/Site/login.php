@@ -147,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
 
       <div class="form-wrap">
-        <form class="card" method="post" action="login.php" novalidate>
+        <form class="card" id="loginForm" method="post" action="login.php" novalidate>
           <?= csrfCampo() ?>
           <h2>Entrar</h2>
           <p class="sub">Acesso para clientes e empresas parceiras.</p>
@@ -180,7 +180,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <p class="erro" style="display:block" role="alert"><?= h($erro) ?></p>
           <?php endif; ?>
 
-          <button type="submit" class="entrar">Entrar</button>
+          <button type="submit" class="entrar" id="btnEntrar">Entrar</button>
 
           <p class="novo">Ainda não tem conta?<a href="registro.php">Criar conta</a></p>
         </form>

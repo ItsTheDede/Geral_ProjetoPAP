@@ -14,6 +14,15 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+if (!function_exists('nomeSessao')) {
+    function nomeSessao(): string {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        return (string)($_SESSION['nome'] ?? '');
+    }
+}
+
 /** Escapa texto para HTML. */
 function h(?string $s): string {
     return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');

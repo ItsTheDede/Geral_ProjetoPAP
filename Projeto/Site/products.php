@@ -21,7 +21,7 @@ try {
 }
 $nomeUtilizador = '';
 if (utilizadorAutenticado()) {
-    $nomeUtilizador = $_SESSION['nome'] ?? $_SESSION['nome_empresa'] ?? 'Utilizador';
+    $nomeUtilizador = nomeSessao();
 }
 ?>
 <!DOCTYPE html>
@@ -59,7 +59,7 @@ if (utilizadorAutenticado()) {
                     <span class="seta">▼</span>
                 </button>
                 <div class="dropdown" id="userDropdown" hidden>
-                    <a href="perfil.php"><span>⚙️</span> Definições</a>
+                    <a href="configura.php"><span>⚙️</span> Definições</a>
                     <a href="logout.php" class="sair"><span>🚪</span> Terminar sessão</a>
                 </div>
             </div><!-- fecha .user-menu -->
@@ -121,7 +121,7 @@ if (utilizadorAutenticado()) {
         <p>Loja de peças auto B2B que liga oficinas às empresas de peças do distrito de Leiria.</p>
         </div>
         <div><h4>Plataforma</h4><a href="products.php">Peças</a><a href="parceiros.php">Parcerias</a><a href="index.php#lojas">Lojas</a></div>
-        <div><h4>Conta</h4><a href="login.php">Entrar</a><a href="registo.php">Pedir acesso</a><a href="about.php">Sobre o projeto</a></div>
+        <div><h4>Conta</h4><a href="login.php">Entrar</a><a href="registro.php">Pedir acesso</a><a href="about.php">Sobre o projeto</a></div>
     </div>
     <div class="copy">© LAM · Peças auto B2B · Leiria</div>
     </footer>

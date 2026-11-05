@@ -8,46 +8,45 @@ if (!utilizadorAutenticado()) {
     exit;
 }
 
-/* ---------- Ligação, deteção e identificação do utilizador ---------- */
+/* ---------- Identificação do utilizador (tabela escolhida pelo tipo de conta) ---------- */
 try {
     $c      = def_cfg();
     $userId = def_id_utilizador();
-    if ($userId === 0) {
-        throw new DefErro(
-            'Não consegui identificar o utilizador',
-            '<p>A sessão tem estas chaves: <code>' . h(implode(', ', array_keys($_SESSION)) ?: '(vazia)') . '</code></p>'
-            . '<p>Diz qual delas guarda o ID (ou o email) do utilizador.</p>'
-        );
+    $user   = def_buscar_utilizador($userId);
+    if (!$user) {
+        fazerLogout();
+        header('Location: login.php');
+        exit;
     }
-} catch (DefErro $e) {
-    $mostrar = def_manual()['debug'];
+} catch (Throwable $e) {
+    error_log('Definições: ' . $e->getMessage());
     http_response_code(500);
     echo '<!DOCTYPE html><html lang="pt"><meta charset="UTF-8"><title>Erro</title>'
        . '<body style="font-family:sans-serif;max-width:640px;margin:60px auto;padding:0 20px">'
-       . '<h1>' . ($mostrar ? h($e->getMessage()) : 'Não foi possível abrir as definições') . '</h1>'
-       . ($mostrar ? $e->detalhe : '<p>Tenta novamente mais tarde.</p>')
-       . '<p><a href="index.php">Voltar ao início</a></p></body></html>';
+       . '<h1>Não foi possível abrir as definições</h1>';
+    if (APP_DEBUG) {
+        echo '<p><code>' . h($e->getMessage()) . '</code></p>'
+           . '<p>Se o erro fala na coluna <code>foto</code>, corre o ficheiro <code>migracao.sql</code> no phpMyAdmin.</p>';
+    } else {
+        echo '<p>Tenta novamente mais tarde.</p>';
+    }
+    echo '<p><a href="index.php">Voltar ao início</a></p></body></html>';
     exit;
 }
 
 /* ---------- Processar formulários ---------- */
-if (empty($_SESSION['csrf'])) {
-    $_SESSION['csrf'] = bin2hex(random_bytes(32));
-}
-
 $ok  = ['perfil' => null, 'password' => null, 'foto' => null];
 $err = ['perfil' => null, 'password' => null, 'foto' => null];
 $formNome  = null;
 $formEmail = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (!hash_equals($_SESSION['csrf'], $_POST['csrf'] ?? '')) {
+    if (!csrfValido()) {
         http_response_code(403);
         exit('Pedido inválido. Atualiza a página e tenta novamente.');
     }
 
     $acao = $_POST['acao'] ?? '';
-    $user = def_buscar_utilizador($userId);
 
     // ---- Nome e email ----
     if ($acao === 'perfil') {
@@ -59,11 +58,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (!filter_var($formEmail, FILTER_VALIDATE_EMAIL)) {
             $err['perfil'] = 'Indica um email válido.';
         } else {
-            $dup = def_select(
-                "SELECT {$c['c_id']} AS id FROM {$c['tabela']}
-                 WHERE {$c['c_email']} = ? AND {$c['c_id']} <> ?",
-                [$formEmail, $userId]
-            );
+            // O login procura nas duas tabelas, por isso o email tem de ser único em ambas
+            $dup = false;
+            foreach (['empresas', 'clientes'] as $t) {
+                $sql = "SELECT id FROM `$t` WHERE email = ?";
+                $p   = [$formEmail];
+                if ($t === $c['t_nome']) {
+                    $sql .= ' AND id <> ?';
+                    $p[]  = $userId;
+                }
+                if (def_select($sql, $p)) {
+                    $dup = true;
+                    break;
+                }
+            }
+
             if ($dup) {
                 $err['perfil'] = 'Esse email já está a ser usado por outra conta.';
             } else {
@@ -73,14 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     [$formNome, $formEmail, $userId]
                 );
                 // Mantém a sessão alinhada com a base de dados
-                foreach (['nome', 'nome_empresa'] as $k) {
-                    if (isset($_SESSION[$k])) {
-                        $_SESSION[$k] = $formNome;
-                    }
-                }
-                if (isset($_SESSION['email'])) {
-                    $_SESSION['email'] = $formEmail;
-                }
+                $_SESSION['user_nome']  = $formNome;
+                $_SESSION['user_email'] = $formEmail;
                 $ok['perfil'] = 'Informações guardadas.';
                 $formNome = $formEmail = null;
             }
@@ -133,7 +136,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!is_dir(AVATAR_DIR)) {
                     mkdir(AVATAR_DIR, 0755, true);
                 }
-                $novoNome = $userId . '_' . bin2hex(random_bytes(8)) . '.' . AVATAR_TIPOS[$mime];
+                // O tipo no nome evita choques entre um cliente e uma empresa com o mesmo id
+                $prefixo  = preg_replace('/[^a-z0-9]/', '', strtolower($c['tipo'] ?? 'particular')) ?: 'particular';
+                $novoNome = $prefixo . '_' . $userId . '_' . bin2hex(random_bytes(8)) . '.' . AVATAR_TIPOS[$mime];
 
                 if (move_uploaded_file($f['tmp_name'], AVATAR_DIR . $novoNome)) {
                     def_apagar_foto($user['foto'] ?? null);
@@ -241,7 +246,7 @@ $cabecalhoJs = true; // esta página não carrega animations.js
 
             <div>
                 <form method="post" enctype="multipart/form-data" class="def-field">
-                    <input type="hidden" name="csrf" value="<?= h($_SESSION['csrf']) ?>">
+                    <?= csrfCampo() ?>
                     <input type="hidden" name="acao" value="foto">
                     <label for="foto">Escolher nova imagem</label>
                     <input type="file" id="foto" name="foto" accept="image/jpeg,image/png,image/webp" required>
@@ -251,7 +256,7 @@ $cabecalhoJs = true; // esta página não carrega animations.js
 
                 <?php if ($temFoto): ?>
                     <form method="post">
-                        <input type="hidden" name="csrf" value="<?= h($_SESSION['csrf']) ?>">
+                        <?= csrfCampo() ?>
                         <input type="hidden" name="acao" value="remover_foto">
                         <button class="def-btn sec" type="submit">Remover foto</button>
                     </form>
@@ -269,11 +274,11 @@ $cabecalhoJs = true; // esta página não carrega animations.js
         <?php if ($desde): ?><p class="def-meta">Conta criada em <?= h($desde) ?></p><?php endif; ?>
 
         <form method="post">
-            <input type="hidden" name="csrf" value="<?= h($_SESSION['csrf']) ?>">
+            <?= csrfCampo() ?>
             <input type="hidden" name="acao" value="perfil">
 
             <div class="def-field">
-                <label for="nome">Nome</label>
+                <label for="nome"><?= $c['tipo'] === 'empresa' ? 'Nome da empresa' : 'Nome' ?></label>
                 <input type="text" id="nome" name="nome" maxlength="100" required
                        value="<?= h($formNome ?? $user['nome']) ?>">
             </div>
@@ -293,7 +298,7 @@ $cabecalhoJs = true; // esta página não carrega animations.js
         <?php if ($err['password']): ?><div class="def-err" role="alert"><?= h($err['password']) ?></div><?php endif; ?>
 
         <form method="post" autocomplete="off">
-            <input type="hidden" name="csrf" value="<?= h($_SESSION['csrf']) ?>">
+            <?= csrfCampo() ?>
             <input type="hidden" name="acao" value="password">
 
             <div class="def-field">
