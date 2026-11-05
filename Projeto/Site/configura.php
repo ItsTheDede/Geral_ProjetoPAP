@@ -278,7 +278,7 @@ $cabecalhoJs = true; // esta página não carrega animations.js
             <input type="hidden" name="acao" value="perfil">
 
             <div class="def-field">
-                <label for="nome"><?= $c['tipo'] === 'empresa' ? 'Nome da empresa' : 'Nome' ?></label>
+                <label for="nome"><?= ($c['tipo'] ?? 'particular') === 'empresa' ? 'Nome da empresa' : 'Nome' ?></label>
                 <input type="text" id="nome" name="nome" maxlength="100" required
                        value="<?= h($formNome ?? $user['nome']) ?>">
             </div>
